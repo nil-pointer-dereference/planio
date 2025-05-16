@@ -2,10 +2,11 @@ package server
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"hackathon-project/internal/database"
 	"hackathon-project/internal/models"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserRegisterRequest struct {
@@ -80,4 +81,27 @@ func HandlerCheckIfSession(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusNotFound, err)
+}
+
+func HandlerGetFormData(c *gin.Context) {
+	u, err := GetAuthenticated(c.GetHeader("Session"))
+	if err != nil {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	var data models.UserForm
+	if err := c.BindJSON(&data); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	data.UserId = u.Id
+
+	if err = database.DB.Create(&data).Error; err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(200, gin.H{"body": data})
 }
