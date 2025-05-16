@@ -4,6 +4,7 @@ import LandingPage from "./pages/landing-page";
 import LoginPage from "./pages/login";
 import QuestionnairePage from "./pages/questionnaire";
 import DayplanPage from "./pages/dayplan";
+import QuestionairePage from "./pages/questionaire";
 
 const routes: RouteObject[] = [
   {
@@ -20,7 +21,7 @@ const routes: RouteObject[] = [
       },
       {
         path: "/questionaire",
-        Component: QuestionnairePage,
+        Component: QuestionairePage,
       },
       {
         path: "/questionnaire",
