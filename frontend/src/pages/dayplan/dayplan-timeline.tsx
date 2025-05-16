@@ -4,8 +4,8 @@ import DayplanTimelineGrid from "./timeline-grid";
 import DayplanTimelineNumbers from "./timeline-numbers";
 
 // Change HOURS to include 0 as the first value
-const HOURS = [0, ...Array.from({ length: 24 }, (_, i) => (i + 1) * 2)];
-const TIMELINE_HOURS = 48;
+const HOURS = Array.from({ length: 13 }, (_, i) => i * 2);
+const TIMELINE_HOURS = 24;
 
 function getHourFromPosition(y: number, timelineHeight: number) {
   // Clamp y to timeline
@@ -126,7 +126,7 @@ export default function DayplanTimeline() {
       previewHour !== null
     ) {
       // Set eventStart based on previewHour, keep duration the same
-      const rounded = Math.round(previewHour * 2) / 2;
+      const rounded = Math.round(previewHour * 4) / 4; // 15 min increments
       const newStart = setHourAndMinute(eventStart, rounded);
       const duration = eventEndHour - eventStartHour;
       let newEnd = new Date(newStart);
@@ -185,8 +185,8 @@ export default function DayplanTimeline() {
       1.5,
       Math.min(newBoxHours, TIMELINE_HOURS - eventStartHour)
     );
-    // Snap to nearest 0.5 hour
-    newBoxHours = Math.round(newBoxHours * 2) / 2;
+    // Snap to nearest 0.25 hour (15 min)
+    newBoxHours = Math.round(newBoxHours * 4) / 4;
     // Set eventEnd based on new duration
     const newEnd = setHourAndMinute(eventStart, eventStartHour + newBoxHours);
     setEventEnd(newEnd);
@@ -201,7 +201,7 @@ export default function DayplanTimeline() {
   // Displayed time (rounded for display)
   const displayHour =
     dragging && previewHour !== null ? previewHour : eventStartHour;
-  const displayStart = Math.round(displayHour * 2) / 2;
+  const displayStart = Math.round(displayHour * 4) / 4; // 15 min increments
   const displayEnd = displayStart + boxHours;
   const displayTopPercent = (displayHour / TIMELINE_HOURS) * 100;
 
