@@ -20,12 +20,11 @@ export default function DayplanEventBox({
   const time = `${start.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
-  })} – ${end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+  })} - ${end.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
 
   const boxRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const [showDescription, setShowDescription] = useState(true);
-  const [showTime, setShowTime] = useState(true);
   const [compact, setCompact] = useState(false);
   const [titleMaxChars, setTitleMaxChars] = useState<number | null>(null);
 

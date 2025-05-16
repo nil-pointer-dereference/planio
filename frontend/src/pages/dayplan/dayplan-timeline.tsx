@@ -1,9 +1,11 @@
 import { useRef, useState } from "react";
-import DayplanEventBox from "./dayplan-event-box";
+import DayplanEventDraggableBox from "./event-draggable-box";
+import DayplanTimelineGrid from "./timeline-grid";
+import DayplanTimelineNumbers from "./timeline-numbers";
 
 // Change HOURS to include 0 as the first value
-const HOURS = [0, ...Array.from({ length: 12 }, (_, i) => (i + 1) * 2)];
-const TIMELINE_HOURS = 24;
+const HOURS = [0, ...Array.from({ length: 24 }, (_, i) => (i + 1) * 2)];
+const TIMELINE_HOURS = 48;
 
 function getHourFromPosition(y: number, timelineHeight: number) {
   // Clamp y to timeline
@@ -209,66 +211,35 @@ export default function DayplanTimeline() {
 
   return (
     <div
-      className="relative w-full min-h-48 h-96 select-none flex flex-row"
+      className="relative w-full min-h-96 h-[48rem] select-none flex flex-row"
       ref={timelineRef}
       onMouseMove={resizing ? onResize : onDrag}
       onMouseUp={resizing ? onResizeEnd : onDragEnd}
       onMouseLeave={resizing ? onResizeEnd : onDragEnd}
     >
       {/* Numbers column */}
-      <div className="relative z-10 flex flex-col justify-between items-end max-w-[1.5rem] h-full select-none pointer-events-none">
-        {HOURS.map((num) => (
-          <div key={num} className="flex items-center h-0">
-            <span className="text-[10px] text-gray-400 pr-2 translate-y-0">
-              {num}
-            </span>
-          </div>
-        ))}
-      </div>
+      <DayplanTimelineNumbers hours={HOURS} />
 
       {/* Timeline lines and event box column */}
       <div className="relative flex-1 h-full">
         {/* Background timeline lines */}
-        <div className="absolute inset-0 pointer-events-none z-0 flex flex-col justify-between h-full">
-          {HOURS.map((num) => (
-            <div key={num} className="flex items-center h-0">
-              <div className="flex-1 h-px bg-gray-200"></div>
-            </div>
-          ))}
-        </div>
+        <DayplanTimelineGrid hours={HOURS} />
+
         <div className="relative flex-1 h-full">
           {/* Draggable & resizable event box */}
           {!dragging && (
-            <div
-              className="absolute left-1/2 z-10 w-[300px] -translate-x-1/2 group"
-              style={{
-                top: `${displayTopPercent}%`,
-                height: `${heightPercent}%`,
-                cursor: resizing ? "ns-resize" : "grab",
-                transition: "top 0.2s cubic-bezier(0.4,0,0.2,1)",
-                userSelect: resizing ? "none" : undefined,
-              }}
-              onMouseDown={onDragStart}
-            >
-              <DayplanEventBox
-                title="Event Title"
-                description="This is a description of the event."
-                start={previewStartDate}
-                end={previewEndDate}
-                top="0"
-                height="100%"
-              />
-              {/* Resize handle */}
-              <div
-                className="absolute bottom-1 left-0 w-full h-2 cursor-ns-resize flex items-end justify-center z-20"
-                onMouseDown={onResizeStart}
-                style={{ touchAction: "none" }}
-              >
-                <div className="w-28 h-0.5 bg-green-800 rounded-full opacity-90 group-hover:opacity-100 mb-0.5" />
-              </div>
-            </div>
+            <DayplanEventDraggableBox
+              topPercent={displayTopPercent}
+              heightPercent={heightPercent}
+              resizing={resizing}
+              onDragStart={onDragStart}
+              onResizeStart={onResizeStart}
+              previewStartDate={previewStartDate}
+              previewEndDate={previewEndDate}
+            />
           )}
         </div>
+
         {/* Floating event box while dragging */}
         {dragging && dragPosition && (
           <div
@@ -284,17 +255,19 @@ export default function DayplanTimeline() {
               transition: "none",
             }}
           >
-            <DayplanEventBox
-              title="Event Title"
-              description="This is a description of the event."
-              start={previewStartDate}
-              end={previewEndDate}
-              top="0"
-              height="100%"
+            <DayplanEventDraggableBox
+              topPercent={0}
+              heightPercent={100}
+              resizing={false}
+              onDragStart={() => {}}
+              onResizeStart={() => {}}
+              previewStartDate={previewStartDate}
+              previewEndDate={previewEndDate}
             />
           </div>
         )}
       </div>
+
       {/* Overlay for pointer events during drag or resize */}
       {(dragging || resizing) && (
         <div

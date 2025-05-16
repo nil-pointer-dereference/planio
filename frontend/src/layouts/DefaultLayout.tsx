@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 export default function DefaultLayout() {
   return (
     <div className="w-screen h-screen">
-      <div className="w-full h-full flex flex-col justify-top items-center">
+      <div className="w-full min-h-full flex flex-col justify-top items-center">
         <Navbar></Navbar>
         <Outlet></Outlet>
       </div>
