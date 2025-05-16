@@ -7,7 +7,7 @@ import AiPopup from "./components/AiPopup/AiPopup";
 function App() {
   return (
     <SidebarProvider defaultOpen={false}>
-      <RouterProvider router={router}></RouterProvider>;
+      <RouterProvider router={router}></RouterProvider>
     </SidebarProvider>
   );
 }

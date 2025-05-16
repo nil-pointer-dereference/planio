@@ -12,7 +12,7 @@ export default function Navbar() {
   return (
     <div className="relative top-0 left-0 w-full p-3 flex flex-row align-center">
       <div>
-        <Link to="/" className="flex p-1 m-1 justify-center mr-10">
+        <Link to="/" className="flex p-1 justify-center mr-10">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"

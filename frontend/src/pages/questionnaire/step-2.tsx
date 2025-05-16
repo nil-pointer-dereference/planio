@@ -81,7 +81,6 @@ export default function StepTwo(props: StepProps) {
                     <Textarea
                       placeholder=""
                       className=""
-                      rows={5}
                       cols={40}
                       {...field}
                     ></Textarea>
@@ -99,7 +98,6 @@ export default function StepTwo(props: StepProps) {
                   <FormControl>
                     <Textarea
                       placeholder=""
-                      rows={5}
                       cols={40}
                       className=""
                       {...field}
@@ -118,7 +116,6 @@ export default function StepTwo(props: StepProps) {
                   <FormControl>
                     <Textarea
                       placeholder=""
-                      rows={5}
                       cols={40}
                       className=""
                       {...field}
@@ -137,7 +134,6 @@ export default function StepTwo(props: StepProps) {
                   <FormControl>
                     <Textarea
                       placeholder=""
-                      rows={5}
                       cols={40}
                       className=""
                       {...field}
