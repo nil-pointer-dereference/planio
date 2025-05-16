@@ -36,6 +36,7 @@ func New() *gorm.DB {
 	}
 
 	DB = db
+
 	fmt.Println("Migrating models")
 	err = db.AutoMigrate(&models.Task{}, &models.TaskType{}, &models.User{}, &models.Session{})
 	if err != nil {
