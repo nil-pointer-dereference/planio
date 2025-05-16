@@ -21,5 +21,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 		ctx.JSON(200, "hello world")
 	})
 
+	r.GET("/task", HandlerGetTasks)
+	r.POST("/ai", HandlerPostAI)
+
 	return r
 }
