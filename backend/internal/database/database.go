@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"hackathon-project/internal/models"
 	"log"
 	"os"
 
@@ -28,6 +29,14 @@ func New() *gorm.DB {
 
 	// Opening a driver typically will not attempt to connect to the database.
 	db, err := gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, host, port, dbname)))
+	if err != nil {
+		// This will not be a connection error, but a DSN parse error or
+		// another initialization error.
+		log.Fatal(err)
+	}
+
+	fmt.Println("Migrating models")
+	err = db.AutoMigrate(&models.Task{}, &models.TaskType{}, &models.User{})
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
