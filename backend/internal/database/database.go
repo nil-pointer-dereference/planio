@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"hackathon-project/internal/models"
+	"hackathon-project/internal/seed"
 	"log"
 	"os"
 
@@ -35,11 +36,21 @@ func New() *gorm.DB {
 		log.Fatal(err)
 	}
 
+	DB = db
+
 	fmt.Println("Migrating models")
-	err = db.AutoMigrate(&models.Task{}, &models.TaskType{}, &models.User{})
+	err = db.AutoMigrate(&models.Task{}, &models.TaskType{}, &models.User{}, &models.Session{}, &models.UserForm{})
 	if err != nil {
-		// This will not be a connection error, but a DSN parse error or
-		// another initialization error.
+		log.Fatal(err)
+	}
+
+	fmt.Println("Seeding Task Types")
+	if err := DB.Save(&seed.TaskTypes).Error; err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Seeding Users")
+	if err := DB.Save(&seed.Users).Error; err != nil {
 		log.Fatal(err)
 	}
 

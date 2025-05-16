@@ -21,5 +21,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 		ctx.JSON(200, "hello world")
 	})
 
+	r.GET("/task", HandlerGetTasks)
+	r.POST("/ai", HandlerPostAI)
+	r.POST("/user/register", HandlerUserRegister)
+	r.POST("/user/login", HandlerUserLogin)
+	r.GET("/user/checkAuth", HandlerCheckIfSession)
+
 	return r
 }

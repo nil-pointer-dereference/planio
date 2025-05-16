@@ -10,6 +10,7 @@ type Task struct {
 	Completed        bool
 	Title            string
 	EstimatedMinutes int
+	Priority         int
 }
 
 type TaskType struct {

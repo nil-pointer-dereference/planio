@@ -4,9 +4,9 @@ import AppBar from "@/components/appbar";
 
 export default function DefaultLayout() {
   return (
-    <div className="w-full h-screen">
+    <div className="w-screen h-screen">
       <Navbar></Navbar>
-      <div className="w-full h-full flex flex-col justify-top items-center pl-30 pr-30 pt-25">
+      <div className="w-full h-full flex flex-col justify-top items-center">
         <Outlet></Outlet>
       </div>
       <AppBar></AppBar>
