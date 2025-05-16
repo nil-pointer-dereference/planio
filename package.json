@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "frontend": "./frontend",
-    "react-router": "^7.6.0"
-  }
-}
