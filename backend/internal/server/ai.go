@@ -20,7 +20,6 @@ type AIContext struct {
 var (
 	API_KEY    = os.Getenv("GEMINI_API_KEY")
 	MAX_TOKENS = 10000
-	BasePrompt = "Generate me a task list for the following day according to this information '%s'"
 )
 
 func CreateNewAIContext(answers map[string]string, tasks *[]models.Task, formatting string) *AIContext {
