@@ -6,12 +6,9 @@ import AiPopup from "./components/AiPopup/AiPopup";
 
 function App() {
   return (
-    <>
-      <AiPopup></AiPopup>
-      <SidebarProvider defaultOpen={false}>
-        <RouterProvider router={router}></RouterProvider>;
-      </SidebarProvider>
-    </>
+    <SidebarProvider defaultOpen={false}>
+      <RouterProvider router={router}></RouterProvider>;
+    </SidebarProvider>
   );
 }
 
