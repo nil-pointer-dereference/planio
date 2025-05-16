@@ -1,8 +1,8 @@
 package server
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"hackathon-project/internal/database"
 	"hackathon-project/internal/models"
 	"net/http"
@@ -65,11 +65,19 @@ func HandlerUserLogin(c *gin.Context) {
 		})
 		return
 	}
+	auth, _ := CreateAuthenticated(user)
 	c.JSON(http.StatusOK, gin.H{
-		"sessionId:": v5UUID(user.Username),
+		"sessionId:": auth.SessionId,
+		"username:":  user.Username,
 	})
 }
 
-func v5UUID(data string) string {
-	return uuid.NewSHA1(uuid.NameSpaceURL, []byte(data)).String()
+func HandlerCheckIfSession(c *gin.Context) {
+	fmt.Println("Got key: " + c.GetHeader("Session"))
+	user, err := GetAuthenticated(c.GetHeader("Session"))
+	if err == nil {
+		c.JSON(http.StatusOK, user)
+		return
+	}
+	c.JSON(http.StatusNotFound, err)
 }
