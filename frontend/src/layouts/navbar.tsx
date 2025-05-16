@@ -4,12 +4,13 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Link, useNavigate } from "react-router";
 
 export default function Navbar() {
   const navigate = useNavigate();
   return (
-    <div className="fixed top-0 left-0 w-screen p-3 flex flex-row align-center">
+    <div className="relative top-0 left-0 w-full p-3 flex flex-row align-center">
       <div>
         <Link to="/" className="flex p-1 m-1 justify-center mr-10">
           <svg
@@ -54,6 +55,8 @@ export default function Navbar() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+      <div className="grow"></div>
+      <SidebarTrigger></SidebarTrigger>
     </div>
   );
 }
