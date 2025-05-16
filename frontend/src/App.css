@@ -3,8 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-<<<<<<< Updated upstream
-=======
 #root {
   margin: 0 auto;
   padding: 2rem;
@@ -46,7 +44,6 @@
 .read-the-docs {
   color: #888;
 }
->>>>>>> Stashed changes
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
