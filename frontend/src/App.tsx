@@ -1,9 +1,12 @@
 import { RouterProvider } from "react-router";
-import "./App.css";
+import "./index.css";
 import router from "./router";
+import { SidebarProvider } from "./components/ui/sidebar";
 
 function App() {
-  return <RouterProvider router={router}></RouterProvider>
+  return <SidebarProvider defaultOpen={false}>
+    <RouterProvider router={router}></RouterProvider>
+  </SidebarProvider>
 }
 
 export default App;
