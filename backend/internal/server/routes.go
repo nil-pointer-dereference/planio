@@ -22,6 +22,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	})
 
 	r.GET("/task", HandlerGetTasks)
+	r.GET("/tasktypes", HandlerGetAllTaskTypes)
 	r.POST("/ai", HandlerPostAI)
 	r.POST("/user/register", HandlerUserRegister)
 	r.POST("/user/login", HandlerUserLogin)

@@ -14,8 +14,6 @@ type Task struct {
 }
 
 type TaskType struct {
-	gorm.Model
-
-	UserID uint `gorm:"nullable"`
-	Type   string
+	Id   int `gorm:"primary_key;AUTO_INCREMENT"`
+	Type string
 }
