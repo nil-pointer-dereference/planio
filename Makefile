@@ -7,11 +7,11 @@ build:
 	@echo "Building..."
 	
 	
-	@go build -o main cmd/api/main.go
+	@go build -o main backend/cmd/api/main.go
 
 # Run the application
 run:
-	@go run cmd/api/main.go &
+	@go run backend/cmd/api/main.go &
 	@npm install --prefer-offline --no-fund --prefix ./frontend
 	@npm run dev --prefix ./frontend
 # Create DB container
@@ -35,11 +35,11 @@ docker-down:
 # Test the application
 test:
 	@echo "Testing..."
-	@go test ./... -v
+	@go test ./backend/... -v
 # Integrations Tests for the application
 itest:
 	@echo "Running integration tests..."
-	@go test ./internal/database -v
+	@go test ./backend/internal/database -v
 
 # Clean the binary
 clean:
@@ -54,9 +54,11 @@ watch:
         else \
             read -p "Go's 'air' is not installed on your machine. Do you want to install it? [Y/n] " choice; \
             if [ "$$choice" != "n" ] && [ "$$choice" != "N" ]; then \
+				cd backend; \
                 go install github.com/air-verse/air@latest; \
                 air; \
                 echo "Watching...";\
+				cd ..; \
             else \
                 echo "You chose not to install air. Exiting..."; \
                 exit 1; \
