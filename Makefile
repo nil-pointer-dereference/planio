@@ -11,7 +11,7 @@ build:
 
 # Run the application
 run:
-	@go run backend/cmd/api/main.go &
+	@cd backend && go run cmd/api/main.go &
 	@npm install --prefer-offline --no-fund --prefix ./frontend
 	@npm run dev --prefix ./frontend
 # Create DB container
