@@ -3,6 +3,7 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import LandingPage from "./pages/landing-page";
 import LoginPage from "./pages/login";
 import QuestionnairePage from "./pages/questionnaire";
+import DayplanPage from "./pages/dayplan";
 
 const routes: RouteObject[] = [
   {
@@ -18,8 +19,20 @@ const routes: RouteObject[] = [
         Component: LoginPage,
       },
       {
+        path: "/questionaire",
+        Component: QuestionnairePage,
+      },
+      {
         path: "/questionnaire",
         Component: QuestionnairePage,
+      },
+      {
+        path: "/dayplan",
+        Component: DayplanPage,
+      },
+      {
+        path: "/dayplan",
+        Component: DayplanPage,
       },
     ],
   },
