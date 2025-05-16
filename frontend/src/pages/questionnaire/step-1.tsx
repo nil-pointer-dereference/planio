@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import H2 from "@/components/typography/h2";
 
 export default function StepOne(props: StepProps) {
   const [_, setParams] = useSearchParams();
@@ -39,10 +40,14 @@ export default function StepOne(props: StepProps) {
   });
 
   return (
-    <Card className="pl-20 pr-20 pt-10 pb-10">
+    <Card className="pl-50 pr-50 pt-20 pb-20">
       <CardHeader>
-        <CardTitle>Krok pierwszy</CardTitle>
-        <CardDescription>Zacznijmy od paru informacji na Twój temat</CardDescription>
+        <CardTitle>
+          <H2>Krok pierwszy</H2>
+        </CardTitle>
+        <CardDescription>
+          Zacznijmy od paru informacji na Twój temat
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...a}>
