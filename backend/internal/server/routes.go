@@ -21,5 +21,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 		ctx.JSON(200, "hello world")
 	})
 
+	r.POST("/user/register", HandlerUserRegister)
+	r.POST("/user/login", HandlerUserLogin)
+	r.GET("/user/checkAuth", HandlerCheckIfSession)
+
 	return r
 }

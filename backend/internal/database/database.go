@@ -35,8 +35,9 @@ func New() *gorm.DB {
 		log.Fatal(err)
 	}
 
+	DB = db
 	fmt.Println("Migrating models")
-	err = db.AutoMigrate(&models.Task{}, &models.TaskType{}, &models.User{})
+	err = db.AutoMigrate(&models.Task{}, &models.TaskType{}, &models.User{}, &models.Session{})
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
