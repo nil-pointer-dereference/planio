@@ -5,7 +5,7 @@ import { SidebarProvider } from "./components/ui/sidebar";
 
 function App() {
   return <SidebarProvider defaultOpen={false}>
-    <RouterProvider router={router}></RouterProvider>;
+    <RouterProvider router={router}></RouterProvider>
   </SidebarProvider>
 }
 
