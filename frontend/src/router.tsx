@@ -30,10 +30,6 @@ const routes: RouteObject[] = [
         path: "/dayplan",
         Component: DayplanPage,
       },
-      {
-        path: "/dayplan",
-        Component: DayplanPage,
-      },
     ],
   },
 ];
