@@ -3,7 +3,7 @@ import StepOne from "./step-1";
 import StepTwo from "./step-2";
 import StepThree from "./step-3";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import H1 from "@/components/typography/h1";
 import { Progress } from "@/components/ui/progress";
 
@@ -18,6 +18,9 @@ const questionnaireSchema = z.object({
   entertainment: z.string(),
   levelOfStress: z.number(),
   dayIntensiveness: z.number(),
+  sportExperience: z.number(),
+  wakeUpTime: z.string(),
+  sleepHours: z.number(),
 });
 
 export type QuestionnaireSchema = z.infer<typeof questionnaireSchema>;
@@ -36,9 +39,14 @@ export default function QuestionnairePage() {
     freeTimeActivities: "",
     rest: "",
     entertainment: "",
-    levelOfStress: 0,
-    dayIntensiveness: 0,
+    levelOfStress: 1,
+    dayIntensiveness: 1,
+    sportExperience: 1,
+    wakeUpTime: "",
+    sleepHours: 4,
   });
+
+  useEffect(() => console.log(form), [form]);
 
   const [searchParams, _] = useSearchParams();
   const step = searchParams.get("step")
@@ -50,18 +58,25 @@ export default function QuestionnairePage() {
   }
 
   const updateFormState = (fields: Partial<QuestionnaireSchema>) => {
-    setForm({ ...(fields as QuestionnaireSchema) });
+    setForm({ ...form, ...(fields as QuestionnaireSchema) });
+  };
+
+  const finishQuestionnaire = (fields: Partial<QuestionnaireSchema>) => {
+    setForm({ ...form, ...(fields as QuestionnaireSchema) });
+    console.log({ ...form, fields });
   };
 
   return (
     <div className="flex flex-col w-full justify-center items-center">
       <H1>Kwestionariusz początkowy</H1>
       <div className="w-[450px] m-5">
-        <Progress max={100} value={(step - 1) * 33}></Progress>
+        <Progress max={100} value={step * 33}></Progress>
       </div>
       {step === 1 && <StepOne updateFormState={updateFormState}></StepOne>}
       {step === 2 && <StepTwo updateFormState={updateFormState}></StepTwo>}
-      {step === 3 && <StepThree></StepThree>}
+      {step === 3 && (
+        <StepThree updateFormState={finishQuestionnaire}></StepThree>
+      )}
     </div>
   );
 }
