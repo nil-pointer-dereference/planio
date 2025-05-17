@@ -15,4 +15,5 @@ type UserForm struct {
 	SportsExperience  uint8  `json:"sportsExperience"`
 	WakeUpTime        string `json:"wakeUpTime"`
 	SleepHours        uint8  `json:"sleepHours"`
+	WorkTime          string `json:"workTime"`
 }

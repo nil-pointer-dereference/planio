@@ -56,7 +56,7 @@ func HandlerPostAI(c *gin.Context) {
 			"Sleep hours":                  string(userForm.SleepHours),
 			"Only Task categories to use:": string(jsonTypes),
 			"Previous tasks and their summaries to learn:": string(jsonTasks),
-			"Work shift time:": "8 am to 4 pm",
+			"Work shift time:": userForm.WorkTime,
 		},
 		&[]models.Task{}, // empty notes
 		"raw generated tasks in json, do not wrap the json codes in JSON markdown markers. do not append any data from me."+
@@ -76,7 +76,8 @@ func HandlerPostAI(c *gin.Context) {
 			"Must keep at least 10 minute breaks between all tasks."+
 			"Tasks have their priority - priority 5 means it has to be included and can not be ommited."+
 			"Tasks with 0 priority could be skipped but don't need to."+
-			"If a user in tasks' summary says something bad about the given task, maybe consider lowering its occurrence times.",
+			"If a user in tasks' summary says something bad about the given task, maybe consider lowering its occurrence times."+
+			"Work (as in job) tasks can only be considered if 'goes to work' is true. Otherwise, the human does not go to work.",
 	)
 
 	raw, err := aiCtx.CreateMsg().WithFormatting().WithTasks().RunPrompt(c)
