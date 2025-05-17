@@ -103,14 +103,12 @@ export default function DayplanEventBox({
       <div
         className="pointer-events-none absolute left-0 w-full"
         style={{
-          // Place at the bottom, stretch up
           bottom: 0,
-          height: "44px", // Will be updated dynamically below
+          height: "16px", // Lowered from 44px to 16px
           background:
             "linear-gradient(to top, #bbf7d0 100%, rgba(187,247,208,0) 0%)",
           zIndex: 1,
         }}
-        // We'll update the height dynamically using JS below
         id="resize-gradient-bg"
       />
 
@@ -197,32 +195,6 @@ export default function DayplanEventBox({
           {description}
         </div>
       )}
-
-      {/* Resize handle and dynamic gradient background height logic */}
-      <div
-        className="absolute bottom-1 left-0 w-full h-2 flex items-end justify-center z-20"
-        style={{ touchAction: "none" }}
-        ref={(el) => {
-          // Dynamically set gradient height based on handle position
-          if (!el) return;
-          const gradient = el.parentElement?.querySelector<HTMLDivElement>(
-            "#resize-gradient-bg"
-          );
-          if (!gradient) return;
-          // Distance from handle to bottom
-          const handleRect = el.getBoundingClientRect();
-          const parentRect = el.parentElement?.getBoundingClientRect();
-          if (!parentRect) return;
-          const handleFromBottom =
-            parentRect.bottom - handleRect.bottom + handleRect.height / 2;
-          // Height: 1x distance + handle height (was 2x)
-          const handleHeight = handleRect.height;
-          const gradientHeight = handleFromBottom + handleHeight;
-          gradient.style.height = `${gradientHeight}px`;
-        }}
-      >
-        <div className="w-28 h-0.5 bg-green-800 rounded-full opacity-90 mb-0.5" />
-      </div>
     </div>
   );
 }
