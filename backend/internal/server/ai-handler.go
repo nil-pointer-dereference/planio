@@ -30,7 +30,6 @@ func HandlerPostAI(c *gin.Context) {
 		fmt.Println("Continuing on empty taskTypes context: " + response.Error.Error())
 	}
 	jsonTypes, _ := json.Marshal(taskTypes)
-	fmt.Println(string(jsonTypes))
 
 	var tasks []models.Task
 	response = database.DB.Find(&tasks)
@@ -38,7 +37,6 @@ func HandlerPostAI(c *gin.Context) {
 		fmt.Println("Continuing on empty tasks: " + response.Error.Error())
 	}
 	jsonTasks, _ := json.Marshal(tasks)
-	fmt.Println(string(jsonTasks))
 
 	aiCtx := CreateNewAIContext(
 		map[string]string{
@@ -144,5 +142,5 @@ func HandleSaveTasks(c *gin.Context) {
 		})
 	}
 	database.DB.Save(&tasks)
-	c.JSON(200, tasks)
+	c.JSON(200, "Saved tasks "+string(rune(len(savetasks))))
 }
