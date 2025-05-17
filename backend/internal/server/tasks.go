@@ -100,7 +100,7 @@ func HandlerSummarizeTask(c *gin.Context) {
 			"A user is telling you about a situation and how the task went."+
 			"Keep it maximum to 4 sentences. Be very kind and if something went wrong, offer a short solution or change."+
 			"Keeping the original values. Do not use any formatting or markdown. Print only a raw text."+
-			"Maybe you could use an emoji.",
+			"Maybe you could use an emoji. Napisz to po polsku.",
 	)
 
 	raw, err := aiCtx.CreateMsg().WithFormatting().WithTasks().RunPrompt(c)
