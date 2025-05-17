@@ -5,10 +5,16 @@ import LoginPage from "./pages/login";
 import QuestionnairePage from "./pages/questionnaire";
 import DayplanPage from "./pages/dayplan";
 import RegisterPage from "./pages/register";
+import SummaryPage from "./pages/summary";
+
 const routes: RouteObject[] = [
   {
     path: "/",
     Component: LandingPage,
+  },
+  {
+    path: "/summary",
+    Component: SummaryPage,
   },
   {
     path: "/login",
