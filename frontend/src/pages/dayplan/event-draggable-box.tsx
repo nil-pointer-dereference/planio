@@ -44,11 +44,11 @@ export default function DayplanEventDraggableBox({
       />
       {/* Resize handle */}
       <div
-        className="absolute bottom-1 left-0 w-full h-2 cursor-ns-resize flex items-end justify-center z-20"
+        className="absolute left-1/2 -translate-x-1/2 bottom-1 w-28 h-1 flex items-end justify-center z-20"
+        style={{ touchAction: "none", cursor: "ns-resize" }}
         onMouseDown={onResizeStart}
-        style={{ touchAction: "none" }}
       >
-        <div className="w-28 h-0.5 bg-green-800 rounded-full opacity-90 group-hover:opacity-100 mb-0.5" />
+        <div className="w-20 h-0.5 bg-green-800 rounded-full opacity-90 group-hover:opacity-100 mb-0.5" />
       </div>
     </div>
   );
