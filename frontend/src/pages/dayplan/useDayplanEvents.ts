@@ -26,13 +26,14 @@ export function useDayplanEvents() {
 
   useEffect(() => {
     async function fetchEvents() {
+      const token = localStorage.getItem("token");
       try {
         setLoading(true);
         const response = await fetch("http://localhost:5173/api/ai", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Session: "da5b8893-d6ca-5c1c-9a9c-91f40a2a3649",
+            Session: token,
           },
         });
 
@@ -62,7 +63,7 @@ export function useDayplanEvents() {
               type: task.Type,
               completed: task.Completed,
             };
-          }
+          },
         );
 
         setEvents(transformedEvents);
@@ -78,3 +79,4 @@ export function useDayplanEvents() {
 
   return { events, setEvents, loading, error };
 }
+
