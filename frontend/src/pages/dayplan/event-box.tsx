@@ -95,10 +95,20 @@ export default function DayplanEventBox({
       style={{
         top,
         height,
-        paddingTop: "0.3rem",
-        paddingBottom: "0.3rem",
+        // Remove vertical padding if height < 25px
+        paddingTop:
+          boxRef.current && boxRef.current.clientHeight < 25 ? "0" : "0.3rem",
+        paddingBottom:
+          boxRef.current && boxRef.current.clientHeight < 25 ? "0" : "0.3rem",
         paddingLeft: "0.75rem",
         paddingRight: "0.75rem",
+        display: "flex",
+        justifyContent:
+          boxRef.current && boxRef.current.clientHeight < 25
+            ? "center"
+            : "flex-start", // vertical centering
+        alignItems: "flex-start", // always stick to left
+        textAlign: "left", // always left
       }}
     >
       {/* Gradient background behind resize handle */}
