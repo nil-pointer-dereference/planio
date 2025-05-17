@@ -482,36 +482,24 @@ export default function DayplanTimeline() {
 
         {/* Floating event box while dragging */}
         {dragging && dragPosition && activeIdx !== null && (
-          <div
-            className="fixed z-50 w-[300px] -translate-x-1/2"
-            style={{
-              left: dragPosition.x,
-              top: dragPosition.y - (dragOffset ?? 0),
-              height: `${
-                ((eventProps?.originalDuration ||
-                  getEventDuration(
-                    events[activeIdx].start,
-                    events[activeIdx].end
-                  )) /
-                  TIMELINE_HOURS) *
-                (timelineRef.current?.clientHeight ?? 0)
-              }px`,
-              pointerEvents: "none",
-              transition: "none",
-            }}
-          >
-            <DayplanEventDraggableBox
-              topPercent={0}
-              heightPercent={100}
-              resizing={false}
-              onDragStart={() => {}}
-              onResizeStart={() => {}}
-              previewStartDate={previewStartDate}
-              previewEndDate={previewEndDate}
-              title={events[activeIdx].title}
-              description={events[activeIdx].description}
-            />
-          </div>
+          <FloatingEventPreview
+            x={dragPosition.x}
+            y={dragPosition.y}
+            dragOffset={dragOffset}
+            height={
+              ((eventProps?.originalDuration ||
+                getEventDuration(
+                  events[activeIdx].start,
+                  events[activeIdx].end
+                )) /
+                TIMELINE_HOURS) *
+              (timelineRef.current?.clientHeight ?? 0)
+            }
+            previewStartDate={previewStartDate}
+            previewEndDate={previewEndDate}
+            title={events[activeIdx].title}
+            description={events[activeIdx].description}
+          />
         )}
       </div>
 
