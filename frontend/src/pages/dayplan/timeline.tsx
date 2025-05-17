@@ -97,25 +97,25 @@ export default function DayplanTimeline() {
   // Show loading indicator while fetching data
   if (loading) {
     return (
-      <div className="w-full min-h-96 h-[48rem] flex items-center justify-center">
+      <div className="w-full min-h-96 h-[120rem] flex items-center justify-center">
         <div className="text-xl">Loading events...</div>
       </div>
     );
   }
 
-  // Show error message if fetch failed
+  // Update the error state container height
   if (error) {
     return (
-      <div className="w-full min-h-96 h-[48rem] flex items-center justify-center">
+      <div className="w-full min-h-96 h-[120rem] flex items-center justify-center">
         <div className="text-red-500 text-xl">Error: {error}</div>
       </div>
     );
   }
 
-  // Main timeline layout
+  // Update the main timeline container height
   return (
     <div
-      className="relative w-full min-h-96 h-[60rem] select-none flex flex-row" // h-[48rem] -> h-[60rem]
+      className="relative w-full min-h-96 h-[120rem] select-none flex flex-row"
       ref={timelineRef}
       onMouseMove={resizing ? onResize : onDrag}
       onMouseUp={resizing ? onResizeEnd : onDragEnd}
