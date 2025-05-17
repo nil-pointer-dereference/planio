@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { type QuestionnaireSchema, type StepProps } from ".";
 import { useSearchParams } from "react-router";
 import { useForm } from "react-hook-form";
@@ -27,8 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import H2 from "@/components/typography/h2";
-
 const hours = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export default function StepThree(props: StepProps) {
@@ -56,13 +48,7 @@ export default function StepThree(props: StepProps) {
   };
 
   return (
-    <Card className="pl-40 pr-40 pt-10 pb-10">
-      <CardHeader>
-        <CardTitle><H2>Krok trzecie</H2></CardTitle>
-        <CardDescription>
-          Chcielibyśmy poznać twoje codzienne nawyki
-        </CardDescription>
-      </CardHeader>
+    <Card>
       <CardContent>
         <Form {...a}>
           <form onSubmit={handleSubmit}>
@@ -70,10 +56,17 @@ export default function StepThree(props: StepProps) {
               control={a.control}
               name={"levelOfStress"}
               render={({ field }) => (
-                <FormItem className="pt-5">
-                  <FormLabel>Poziom stresu</FormLabel>
-                  <FormDescription>
+                <FormItem>
+                  <FormLabel className="pb-2">
                     Na jakim poziomie oceniasz swój codzienny stres?
+                  </FormLabel>
+                  <FormDescription className="flex justify-between">
+                    <span className="mr-auto w-full text-pretty">
+                      Totalny luz
+                    </span>
+                    <span className="text-pretty min-w-max">
+                      Stres na maksa
+                    </span>
                   </FormDescription>
                   <FormControl>
                     <Slider
@@ -92,10 +85,17 @@ export default function StepThree(props: StepProps) {
               name={"dayIntensiveness"}
               render={({ field }) => (
                 <FormItem className="mt-5">
-                  <FormLabel>Intensywność dnia</FormLabel>
-                  <FormDescription>
+                  <FormLabel>
                     Jak bardzo aktywny/aktywna jesteś w ciągu dnia? Jak wiele
                     czynności lubisz się podejmować?
+                  </FormLabel>
+                  <FormDescription className="flex justify-between">
+                    <span className="mr-auto w-full text-pretty">
+                      Zen mistrz prokrastynacji
+                    </span>
+                    <span className="text-pretty min-w-max">
+                      Multitasking ninja
+                    </span>
                   </FormDescription>
                   <FormControl>
                     <Slider
@@ -114,9 +114,15 @@ export default function StepThree(props: StepProps) {
               name={"sportExperience"}
               render={({ field }) => (
                 <FormItem className="mt-5">
-                  <FormLabel>Doświadczenie w sporcie</FormLabel>
-                  <FormDescription>
+                  <FormLabel>
                     Jak dużo i jak często lubisz ćwiczyć/spędzać czas aktywnie?
+                  </FormLabel>
+
+                  <FormDescription className="flex justify-between">
+                    <span className="mr-auto w-full text-pretty">
+                      Kanapowicz pospility
+                    </span>
+                    <span className="text-pretty min-w-max">David Goggins</span>
                   </FormDescription>
                   <FormControl>
                     <Slider
@@ -130,52 +136,56 @@ export default function StepThree(props: StepProps) {
                 </FormItem>
               )}
             ></FormField>
-            <FormField
-              control={a.control}
-              name={"wakeUpTime"}
-              render={({ field }) => (
-                <FormItem className="mt-5">
-                  <FormLabel>Godzina pobudki</FormLabel>
-                  <FormDescription>
-                    O jakiej godzinie zwykle wstajesz z łóżka?
-                  </FormDescription>
-                  <FormControl>
-                    <TimePicker field={field}></TimePicker>
-                  </FormControl>
-                </FormItem>
-              )}
-            ></FormField>
-            <FormField
-              control={a.control}
-              name={"sleepHours"}
-              render={({ field }) => (
-                <FormItem className="mt-5">
-                  <FormLabel>Ilość snu</FormLabel>
-                  <FormDescription>Jak długo zwykle śpisz?</FormDescription>
-                  <FormControl>
-                    <Select
-                      defaultValue={String(field.value)}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger className="font-normal focus:ring-0 w-[240px] focus:ring-offset-0">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <ScrollArea className="h-[15rem]">
-                          {hours.map((i) => (
-                            <SelectItem key={i} value={String(i)}>
-                              {i}
-                            </SelectItem>
-                          ))}
-                        </ScrollArea>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                </FormItem>
-              )}
-            ></FormField>
+            <div className="grid grid-cols-2 gap-12 justify-between">
+              <FormField
+                control={a.control}
+                name={"wakeUpTime"}
+                render={({ field }) => (
+                  <FormItem className="mt-5 w-full">
+                    <FormLabel>Godzina pobudki</FormLabel>
+                    <FormDescription>
+                      O jakiej godzinie zwykle wstajesz z łóżka?
+                    </FormDescription>
+                    <FormControl>
+                      <TimePicker field={field}></TimePicker>
+                    </FormControl>
+                  </FormItem>
+                )}
+              ></FormField>
+              <FormField
+                control={a.control}
+                name={"sleepHours"}
+                render={({ field }) => (
+                  <FormItem className="mt-5  w-full">
+                    <FormLabel>Ilość snu</FormLabel>
+                    <FormDescription>Jak długo zwykle śpisz?</FormDescription>
+                    <FormControl>
+                      <Select
+                        defaultValue={String(field.value)}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="font-normal focus:ring-0 w-full focus:ring-offset-0">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <ScrollArea className="h-[15rem]">
+                            {hours.map((i) => (
+                              <SelectItem key={i} value={String(i)}>
+                                {i}
+                              </SelectItem>
+                            ))}
+                          </ScrollArea>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  </FormItem>
+                )}
+              ></FormField>
+            </div>
             <div className="w-full flex pt-10 pl-5 pr-5">
-              <Button type="submit" onClick={handleBack}>Wróć</Button>
+              <Button type="submit" onClick={handleBack}>
+                Wróć
+              </Button>
               <div className="flex-grow"></div>
               <Button type="submit">Zakończ</Button>
             </div>

@@ -17,10 +17,10 @@ type TimePickerProps = {
 export default function TimePicker({ field }: TimePickerProps) {
   return (
     <Select
-      defaultValue={field.value as string ?? "00:00"}
+      defaultValue={(field.value as string) ?? "00:00"}
       onValueChange={field.onChange}
     >
-      <SelectTrigger className="font-normal focus:ring-0 w-[240px] focus:ring-offset-0">
+      <SelectTrigger className="font-normal w-full focus:ring-0  focus:ring-offset-0">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

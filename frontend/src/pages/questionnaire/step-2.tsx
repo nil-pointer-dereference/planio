@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { type QuestionnaireSchema, type StepProps } from ".";
 import { useSearchParams } from "react-router";
 import { useForm } from "react-hook-form";
@@ -18,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import H2 from "@/components/typography/h2";
 
 export default function StepTwo(props: StepProps) {
   const [_, setParams] = useSearchParams();
@@ -49,11 +42,7 @@ export default function StepTwo(props: StepProps) {
   };
 
   return (
-    <Card className="pl-20 pr-20 pt-10 pb-10">
-      <CardHeader>
-        <CardTitle><H2>Krok drugi</H2></CardTitle>
-        <CardDescription>Opowiedz nam coś więcej o sobie</CardDescription>
-      </CardHeader>
+    <Card>
       <CardContent>
         <Form {...a}>
           <form onSubmit={handleSubmit}>
@@ -61,7 +50,7 @@ export default function StepTwo(props: StepProps) {
               control={a.control}
               name={"interests"}
               render={({ field }) => (
-                <FormItem className="pt-5">
+                <FormItem>
                   <FormLabel>Zaintersowanie</FormLabel>
                   <FormDescription>Jakie masz hobby?</FormDescription>
                   <FormControl>
@@ -76,7 +65,9 @@ export default function StepTwo(props: StepProps) {
               render={({ field }) => (
                 <FormItem className="pt-5">
                   <FormLabel>Cele</FormLabel>
-                  <FormDescription>Co chciałbyś/chciałabyś z nami osiągnąć?</FormDescription>
+                  <FormDescription>
+                    Co chciałbyś/chciałabyś z nami osiągnąć?
+                  </FormDescription>
                   <FormControl>
                     <Textarea
                       placeholder=""
@@ -94,7 +85,9 @@ export default function StepTwo(props: StepProps) {
               render={({ field }) => (
                 <FormItem className="pt-5">
                   <FormLabel>Czas wolny</FormLabel>
-                  <FormDescription>Co najczęściej robisz w wolnym czasie?</FormDescription>
+                  <FormDescription>
+                    Co najczęściej robisz w wolnym czasie?
+                  </FormDescription>
                   <FormControl>
                     <Textarea
                       placeholder=""
@@ -112,7 +105,10 @@ export default function StepTwo(props: StepProps) {
               render={({ field }) => (
                 <FormItem className="pt-5">
                   <FormLabel>Odpoczynek</FormLabel>
-                  <FormDescription>W jaki sposób lubisz odpoczywać? Aktywnie, a może bardziej pasywnie?</FormDescription>
+                  <FormDescription>
+                    W jaki sposób lubisz odpoczywać? Aktywnie, a może bardziej
+                    pasywnie?
+                  </FormDescription>
                   <FormControl>
                     <Textarea
                       placeholder=""
@@ -130,7 +126,9 @@ export default function StepTwo(props: StepProps) {
               render={({ field }) => (
                 <FormItem className="pt-5">
                   <FormLabel>Rozrywka</FormLabel>
-                  <FormDescription>Jakie są twoje ulubione spoosby na rozrywkę?</FormDescription>
+                  <FormDescription>
+                    Jakie są twoje ulubione spoosby na rozrywkę?
+                  </FormDescription>
                   <FormControl>
                     <Textarea
                       placeholder=""
@@ -143,7 +141,9 @@ export default function StepTwo(props: StepProps) {
               )}
             ></FormField>
             <div className="w-full flex pt-10 pl-5 pr-5">
-              <Button type="submit" onClick={handleBack}>Wróć</Button>
+              <Button type="submit" onClick={handleBack}>
+                Wróć
+              </Button>
               <div className="flex-grow"></div>
               <Button type="submit">Dalej</Button>
             </div>

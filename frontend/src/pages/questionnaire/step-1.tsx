@@ -1,25 +1,18 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { type QuestionnaireSchema, type StepProps } from ".";
 import { useSearchParams } from "react-router";
 import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import H2 from "@/components/typography/h2";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 export default function StepOne(props: StepProps) {
   const [_, setParams] = useSearchParams();
@@ -40,15 +33,7 @@ export default function StepOne(props: StepProps) {
   });
 
   return (
-    <Card className="pl-50 pr-50 pt-20 pb-20">
-      <CardHeader>
-        <CardTitle>
-          <H2>Krok pierwszy</H2>
-        </CardTitle>
-        <CardDescription>
-          Zacznijmy od paru informacji na Twój temat
-        </CardDescription>
-      </CardHeader>
+    <Card className="min-w-lg">
       <CardContent>
         <Form {...a}>
           <form onSubmit={handleSubmit}>
@@ -56,9 +41,8 @@ export default function StepOne(props: StepProps) {
               control={a.control}
               name={"name"}
               render={({ field }) => (
-                <FormItem className="pt-5">
+                <FormItem>
                   <FormLabel>Imię</FormLabel>
-                  <FormDescription>Jak masz na imię?</FormDescription>
                   <FormControl>
                     <Input placeholder="Podaj swoje imię" {...field}></Input>
                   </FormControl>
@@ -71,7 +55,6 @@ export default function StepOne(props: StepProps) {
               render={({ field }) => (
                 <FormItem className="mt-5">
                   <FormLabel>Wiek</FormLabel>
-                  <FormDescription>Ile masz lat?</FormDescription>
                   <FormControl>
                     <Input
                       type="number"
@@ -85,15 +68,24 @@ export default function StepOne(props: StepProps) {
             <FormField
               control={a.control}
               name={"doesWork"}
-              render={({ field }) => (
+              render={() => (
                 <FormItem className="mt-5">
-                  <FormLabel>Zatrudnienie</FormLabel>
-                  <FormDescription>Czy pracujesz?</FormDescription>
+                  <FormLabel>Czy pracujesz?</FormLabel>
                   <FormControl className="flex">
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    ></Switch>
+                    <RadioGroup
+                      defaultValue="false"
+                      className="flex gap-2"
+                      name="doesWork"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="true" id="doesWork-yes" />
+                        <Label htmlFor="yes">Tak</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="false" id="doesWork-no" />
+                        <Label htmlFor="no">Nie</Label>
+                      </div>
+                    </RadioGroup>
                   </FormControl>
                 </FormItem>
               )}

@@ -5,7 +5,6 @@ import LoginPage from "./pages/login";
 import QuestionnairePage from "./pages/questionnaire";
 import DayplanPage from "./pages/dayplan";
 import RegisterPage from "./pages/register";
-
 const routes: RouteObject[] = [
   {
     path: "/",
@@ -17,20 +16,17 @@ const routes: RouteObject[] = [
   },
   {
     path: "/register",
-    Component: RegisterPage
+    Component: RegisterPage,
   },
+  {
+    path: "/questionnaire",
+    Component: QuestionnairePage,
+  },
+
   {
     path: "/",
     Component: DefaultLayout,
     children: [
-      {
-        path: "/register",
-        Component: RegisterPage
-      },
-      {
-        path: "/questionnaire",
-        Component: QuestionnairePage,
-      },
       {
         path: "/dayplan",
         Component: DayplanPage,
