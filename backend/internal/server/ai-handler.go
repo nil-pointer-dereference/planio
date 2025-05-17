@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -98,4 +99,26 @@ func HandlerPostAI(c *gin.Context) {
 	}
 
 	c.AbortWithStatus(400)
+}
+
+type SaveTask struct {
+	ID          int       `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Type        string    `json:"type"`
+	Start       time.Time `json:"start"`
+	End         time.Time `json:"end"`
+	Completed   bool      `json:"completed"`
+}
+
+func HandleSaveTasks(c *gin.Context) {
+	var tasks []models.Task
+	var savetasks []SaveTask
+	err := c.ShouldBindJSON(&savetasks)
+	if err != nil {
+		c.AbortWithStatus(400)
+	}
+	fmt.Println(savetasks)
+	fmt.Println(tasks)
+	c.JSON(200, tasks)
 }
