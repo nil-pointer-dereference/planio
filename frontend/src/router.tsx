@@ -4,7 +4,7 @@ import LandingPage from "./pages/landing-page";
 import LoginPage from "./pages/login";
 import QuestionnairePage from "./pages/questionnaire";
 import DayplanPage from "./pages/dayplan";
-import QuestionairePage from "./pages/questionaire";
+import RegisterPage from "./pages/register";
 
 const routes: RouteObject[] = [
   {
@@ -12,6 +12,17 @@ const routes: RouteObject[] = [
     Component: LandingPage,
   },
   {
+<<<<<<< Updated upstream
+=======
+    path: "/login",
+    Component: LoginPage,
+  },
+  {
+    path: "/register",
+    Component: RegisterPage
+  },
+  {
+>>>>>>> Stashed changes
     path: "/",
     Component: DefaultLayout,
     children: [
@@ -20,8 +31,13 @@ const routes: RouteObject[] = [
         Component: LoginPage,
       },
       {
+<<<<<<< Updated upstream
         path: "/questionaire",
         Component: QuestionairePage,
+=======
+        path: "/register",
+        Component: RegisterPage
+>>>>>>> Stashed changes
       },
       {
         path: "/questionnaire",
