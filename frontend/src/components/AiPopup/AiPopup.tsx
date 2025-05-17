@@ -10,7 +10,7 @@ export default function AiPopup() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div>
+    <div className="absolute right-50 top-20">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger className="cursor-pointer bg-primary p-3 rounded-lg hover:bg-linear-to-l from-background/40 to-primary/60 hover:from-primary/80 hover:to-accent/80 hover:text-background">
           Manage Task
