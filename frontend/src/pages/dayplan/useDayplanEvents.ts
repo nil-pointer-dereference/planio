@@ -79,4 +79,3 @@ export function useDayplanEvents() {
 
   return { events, setEvents, loading, error };
 }
-
