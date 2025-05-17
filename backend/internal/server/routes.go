@@ -30,7 +30,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.POST("/user/login", HandlerUserLogin)
 	r.GET("/user/checkAuth", HandlerCheckIfSession)
 	r.POST("/form", HandlerGetFormData)
-	r.GET("/taskdopamine", HandlerDopamine)
+	r.POST("/taskdopamine", HandlerDopamine)
 
 	return r
 }
