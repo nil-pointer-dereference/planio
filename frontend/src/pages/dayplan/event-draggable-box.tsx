@@ -1,5 +1,5 @@
 import React from "react";
-import DayplanEventBox from "./dayplan-event-box";
+import DayplanEventBox from "./event-box";
 
 export default function DayplanEventDraggableBox({
   topPercent,

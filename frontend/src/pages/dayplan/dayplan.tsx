@@ -8,7 +8,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import DayplanTimeline from "./dayplan-timeline";
+import DayplanTimeline from "./timeline";
 
 export default function Dayplan() {
   return (
