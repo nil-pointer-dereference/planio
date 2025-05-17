@@ -12,13 +12,18 @@ const routes: RouteObject[] = [
     Component: LandingPage,
   },
   {
+    path: "/login",
+    Component: LoginPage,
+  },
+  {
+    path: "/register",
+    //TODO Create register page
+    Component: LoginPage,
+  },
+  {
     path: "/",
     Component: DefaultLayout,
     children: [
-      {
-        path: "/login",
-        Component: LoginPage,
-      },
       {
         path: "/questionaire",
         Component: QuestionairePage,
