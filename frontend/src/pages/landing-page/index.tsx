@@ -4,12 +4,12 @@ import { Link } from "react-router";
 
 export default function LandingPage() {
   return (
-    <div>
+    <div className="w-full">
       <div className="flex right-6 top-6 gap-6 absolute">
         <Link to="/login">
           <Button
             variant="outline"
-            className="text-md hover:bg-secondary/20 rounded-full px-6 py-5 border-primary text-foreground hover:text-secondary"
+            className="text-md hover:bg-secondary/20 rounded-full px-6 py-5 border-primary text-foreground hover:text-secondary-foreground"
           >
             Logowanie
           </Button>
