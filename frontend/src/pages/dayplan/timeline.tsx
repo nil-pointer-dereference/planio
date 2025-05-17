@@ -1,4 +1,5 @@
 import DayplanTimelineGrid from "./timeline-grid";
+import axios from "axios";
 import DayplanTimelineNumbers from "./timeline-numbers";
 import TimelineOverlay from "./timeline-overlay";
 import {
@@ -112,8 +113,34 @@ export default function DayplanTimeline() {
     );
   }
 
-  console.log(events)
+  function debounceRequest(callback: unknown, delay = 700) {
+    let timer: any;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    };
+  }
 
+  const sendRequest = async (data: any) => {
+    try {
+      const response = await axios.put("http://localhost:5173/api/ai", data, {
+        headers: {
+          "Content-Type": "application/json",
+          Session: localStorage.getItem("token"),
+        },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(
+        `Request failed: ${error.response?.status || error.message}`,
+      );
+    }
+  };
+
+  console.log(events);
+  debounceRequest(sendRequest(events), 700);
 
   // Update the main timeline container height
   return (
@@ -124,7 +151,6 @@ export default function DayplanTimeline() {
       onMouseUp={resizing ? onResizeEnd : onDragEnd}
       onMouseLeave={resizing ? onResizeEnd : onDragEnd}
     >
-
       {/* Numbers column */}
       <DayplanTimelineNumbers hours={HOURS} />
 
@@ -155,7 +181,7 @@ export default function DayplanTimeline() {
               ((eventProps?.originalDuration ||
                 getEventDuration(
                   events[activeIdx].start,
-                  events[activeIdx].end
+                  events[activeIdx].end,
                 )) /
                 TIMELINE_HOURS) *
               (timelineRef.current?.clientHeight ?? 0)
