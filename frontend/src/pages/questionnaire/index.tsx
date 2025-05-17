@@ -6,6 +6,8 @@ import { z } from "zod";
 import { useEffect, useState } from "react";
 import H1 from "@/components/typography/h1";
 import { Progress } from "@/components/ui/progress";
+import useQuestionnaire from "@/hooks/use-questionnaire";
+import LoadingScreen from "@/components/loading-screen";
 
 const questionnaireSchema = z.object({
   age: z.number(),
@@ -30,6 +32,7 @@ export interface StepProps {
 }
 
 export default function QuestionnairePage() {
+  const { isPosting, sendQuestionnaire } = useQuestionnaire();
   const [form, setForm] = useState<QuestionnaireSchema>({
     age: 18,
     name: "",
@@ -61,9 +64,10 @@ export default function QuestionnairePage() {
     setForm({ ...form, ...(fields as QuestionnaireSchema) });
   };
 
-  const finishQuestionnaire = (fields: Partial<QuestionnaireSchema>) => {
-    setForm({ ...form, ...(fields as QuestionnaireSchema) });
-    console.log({ ...form, fields });
+  const finishQuestionnaire = async (fields: Partial<QuestionnaireSchema>) => {
+    const final = { ...form, ...fields };
+    setForm(final);
+    await sendQuestionnaire(final);
   };
 
   return (
@@ -77,6 +81,7 @@ export default function QuestionnairePage() {
       {step === 3 && (
         <StepThree updateFormState={finishQuestionnaire}></StepThree>
       )}
+      <LoadingScreen open={isPosting}></LoadingScreen>
     </div>
   );
 }
