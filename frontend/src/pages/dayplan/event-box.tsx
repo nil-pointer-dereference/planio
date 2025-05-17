@@ -113,7 +113,7 @@ export default function DayplanEventBox({
         // We'll update the height dynamically using JS below
         id="resize-gradient-bg"
       />
-      {/* ...existing content... */}
+
       {!compact ? (
         <div
           ref={titleRef}
@@ -165,22 +165,11 @@ export default function DayplanEventBox({
           </span>
         </div>
       )}
-      {showDescription && !compact && (
-        <div
-          className="text-green-800 text-xs mb-2 w-full"
-          style={{
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            flexShrink: 0,
-          }}
-        >
-          {description}
-        </div>
-      )}
+
+      {/* Time - moved above description */}
       {!compact && (
         <div
-          className="text-green-700 text-xs font-mono w-full"
+          className="text-green-700 text-xs font-mono w-full mb-1"
           style={{
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -191,6 +180,24 @@ export default function DayplanEventBox({
           {time}
         </div>
       )}
+
+      {/* Description - now after time */}
+      {showDescription && !compact && (
+        <div
+          className="text-green-800 text-xs w-full"
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            flexShrink: 0,
+            wordBreak: "break-word",
+            maxHeight: "calc(100% - 55px)", // Allow multi-line with scrolling if needed
+            overflowY: "auto",
+          }}
+        >
+          {description}
+        </div>
+      )}
+
       {/* Resize handle and dynamic gradient background height logic */}
       <div
         className="absolute bottom-1 left-0 w-full h-2 flex items-end justify-center z-20"
