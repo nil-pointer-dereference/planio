@@ -12,6 +12,8 @@ import {
   isOverlapping,
   hasOverlap,
 } from "./timeline-utils";
+import DayplanEventList from "./event-list";
+import FloatingEventPreview from "./floating-event-preview";
 
 // Change HOURS to include 0 as the first value
 const HOURS = Array.from({ length: 13 }, (_, i) => i * 2);
@@ -393,33 +395,14 @@ export default function DayplanTimeline() {
         <DayplanTimelineGrid hours={HOURS} />
 
         <div className="relative flex-1 h-full">
-          {/* Render all event boxes */}
-          {events.map((event, idx) => {
-            const startHour = getHourOffset(event.start);
-            const endHour = getHourOffset(event.end);
-            const topPercent = (startHour / TIMELINE_HOURS) * 100;
-            const heightPercent =
-              ((endHour - startHour) / TIMELINE_HOURS) * 100;
-            const isActive = activeIdx === idx && (dragging || resizing);
-
-            // Hide the static box for the active event while dragging
-            if (dragging && activeIdx === idx) return null;
-
-            return (
-              <DayplanEventDraggableBox
-                key={event.id}
-                topPercent={topPercent}
-                heightPercent={heightPercent}
-                resizing={isActive && resizing}
-                onDragStart={onDragStart(idx)}
-                onResizeStart={onResizeStart(idx)}
-                previewStartDate={event.start}
-                previewEndDate={event.end}
-                title={event.title}
-                description={event.description}
-              />
-            );
-          })}
+          <DayplanEventList
+            events={events}
+            activeIdx={activeIdx}
+            dragging={dragging}
+            resizing={resizing}
+            onDragStart={onDragStart}
+            onResizeStart={onResizeStart}
+          />
         </div>
 
         {/* Floating event box while dragging */}
