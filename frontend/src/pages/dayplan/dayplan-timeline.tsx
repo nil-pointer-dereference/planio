@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import DayplanEventDraggableBox from "./event-draggable-box";
 import DayplanTimelineGrid from "./timeline-grid";
 import DayplanTimelineNumbers from "./timeline-numbers";
+import TimelineOverlay from "./timeline-overlay";
 
 // Change HOURS to include 0 as the first value
 const HOURS = Array.from({ length: 13 }, (_, i) => i * 2);
@@ -516,9 +517,8 @@ export default function DayplanTimeline() {
 
       {/* Overlay for pointer events during drag or resize */}
       {(dragging || resizing) && (
-        <div
-          className="fixed inset-0 z-40"
-          style={{ cursor: resizing ? "ns-resize" : "grabbing" }}
+        <TimelineOverlay
+          resizing={resizing}
           onMouseMove={resizing ? onResize : onDrag}
           onMouseUp={resizing ? onResizeEnd : onDragEnd}
         />
