@@ -17,9 +17,36 @@ function getHourFromPosition(y: number, timelineHeight: number) {
 
 // Helper to get hour offset from midnight
 function getHourOffset(date: Date) {
+  // If it's midnight (00:00:00), return 24 only if it's a different date than "today"
+  if (
+    date.getHours() === 0 &&
+    date.getMinutes() === 0 &&
+    date.getSeconds() === 0
+  ) {
+    // Need to check if this is actually intended to be end-of-day by looking at context
+    // For now, assume 00:00 means end-of-day (24:00) if used as an end time
+    return 0; // Still return 0, but we'll handle this specially elsewhere
+  }
   return date.getHours() + date.getMinutes() / 60;
 }
 
+// Add this helper function to consistently handle midnight calculations
+function getEventDuration(start: Date, end: Date): number {
+  let endHour = getHourOffset(end);
+
+  // If end time is midnight (00:00), treat it as 24:00 for duration calculation
+  if (
+    endHour === 0 &&
+    end.getHours() === 0 &&
+    end.getMinutes() === 0 &&
+    end.getSeconds() === 0 &&
+    end.getDate() !== start.getDate()
+  ) {
+    endHour = 24;
+  }
+
+  return endHour - getHourOffset(start);
+}
 // Helper to set hour and minute on a date
 function setHourAndMinute(date: Date, hourFloat: number) {
   const hours = Math.floor(hourFloat);
@@ -33,17 +60,72 @@ export default function DayplanTimeline() {
   const timelineRef = useRef<HTMLDivElement>(null);
 
   // Store event start/end as Date objects
-  const [eventStart, setEventStart] = useState<Date>(() => {
-    const d = new Date();
-    d.setHours(8, 0, 0, 0); // default 8:00
-    return d;
-  });
-  const [eventEnd, setEventEnd] = useState<Date>(() => {
-    const d = new Date();
-    d.setHours(12, 0, 0, 0); // default 12:00
-    return d;
-  });
+  // Removed unused eventStart and eventEnd state to avoid redeclaration error.
+  const [events, setEvents] = useState([
+    {
+      id: 1,
+      start: (() => {
+        const d = new Date();
+        d.setHours(8, 0, 0, 0);
+        return d;
+      })(),
+      end: (() => {
+        const d = new Date();
+        d.setHours(12, 0, 0, 0);
+        return d;
+      })(),
+      title: "Morning Workshop",
+      description: "Intro to React and TypeScript.",
+    },
+    {
+      id: 2,
+      start: (() => {
+        const d = new Date();
+        d.setHours(12, 30, 0, 0);
+        return d;
+      })(),
+      end: (() => {
+        const d = new Date();
+        d.setHours(14, 0, 0, 0);
+        return d;
+      })(),
+      title: "Lunch & Networking",
+      description: "Buffet lunch and networking session.",
+    },
+    {
+      id: 3,
+      start: (() => {
+        const d = new Date();
+        d.setHours(14, 30, 0, 0);
+        return d;
+      })(),
+      end: (() => {
+        const d = new Date();
+        d.setHours(16, 0, 0, 0);
+        return d;
+      })(),
+      title: "Afternoon Panel",
+      description: "Panel: Future of IT careers.",
+    },
+    {
+      id: 4,
+      start: (() => {
+        const d = new Date();
+        d.setHours(16, 30, 0, 0);
+        return d;
+      })(),
+      end: (() => {
+        const d = new Date();
+        d.setHours(18, 15, 0, 0);
+        return d;
+      })(),
+      title: "Closing Keynote",
+      description:
+        "Keynote: Embracing Change in Tech. Join us for a deep dive into the latest industry trends and future outlook.",
+    },
+  ]);
 
+  const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [dragging, setDragging] = useState(false);
   const [resizing, setResizing] = useState(false);
   const [dragOffset, setDragOffset] = useState<number | null>(null);
@@ -56,41 +138,56 @@ export default function DayplanTimeline() {
   const [resizeStartHeight, setResizeStartHeight] = useState<number | null>(
     null
   );
+  const [eventProps, setEventProps] = useState<{
+    originalEndsMidnight: boolean;
+    originalDuration: number;
+  } | null>(null);
 
-  // Calculate top and height in percent based on Date
-  // ...existing code...
-  // Calculate top and height in percent based on Date
+  // Helper to get event data for the active event
+  const event = activeIdx !== null ? events[activeIdx] : null;
+  const eventStart = event?.start ?? new Date();
+  const eventEnd = event?.end ?? new Date();
+
   const eventStartHour = getHourOffset(eventStart);
-
-  // If eventEnd is exactly 00:00:00 and next day, treat as 24:00 for boxHours
-  const isEndMidnightNextDay =
-    eventEnd.getHours() === 0 &&
-    eventEnd.getMinutes() === 0 &&
-    eventEnd.getSeconds() === 0 &&
-    (eventEnd.getDate() !== eventStart.getDate() ||
-      eventEnd.getDay() !== eventStart.getDay());
-
-  const eventEndHour = isEndMidnightNextDay ? 24 : getHourOffset(eventEnd);
+  const eventEndHour = getHourOffset(eventEnd);
   const boxHours = eventEndHour - eventStartHour;
-  const topPercent = (eventStartHour / TIMELINE_HOURS) * 100;
-  const heightPercent = (boxHours / TIMELINE_HOURS) * 100;
-  // ...existing code...
 
   // Mouse drag handlers
-  function onDragStart(e: React.MouseEvent) {
-    if (resizing) return;
-    setDragging(true);
-    if (timelineRef.current) {
-      const rect = timelineRef.current.getBoundingClientRect();
-      const boxTop = rect.top + (topPercent / 100) * rect.height;
-      setDragOffset(e.clientY - boxTop);
-    }
-    setDragPosition({ x: e.clientX, y: e.clientY });
-    e.preventDefault();
+  function onDragStart(idx: number) {
+    return (e: React.MouseEvent) => {
+      if (resizing) return;
+      setActiveIdx(idx);
+      setDragging(true);
+
+      // Store original event properties for comparison
+      const originalEvent = events[idx];
+      const originalEndsMidnight =
+        originalEvent.end.getHours() === 0 &&
+        originalEvent.end.getMinutes() === 0 &&
+        originalEvent.end.getSeconds() === 0 &&
+        originalEvent.end.getDate() !== originalEvent.start.getDate();
+
+      // Store this info in state
+      setEventProps({
+        originalEndsMidnight,
+        originalDuration:
+          getHourOffset(originalEvent.end) - getHourOffset(originalEvent.start),
+      });
+
+      if (timelineRef.current) {
+        const rect = timelineRef.current.getBoundingClientRect();
+        const boxTop =
+          rect.top +
+          (getHourOffset(events[idx].start) / TIMELINE_HOURS) * rect.height;
+        setDragOffset(e.clientY - boxTop);
+      }
+      setDragPosition({ x: e.clientX, y: e.clientY });
+      e.preventDefault();
+    };
   }
 
   function onDrag(e: React.MouseEvent) {
-    if (resizing) return;
+    if (resizing || activeIdx === null) return;
     if (!dragging) return;
     setDragPosition({ x: e.clientX, y: e.clientY });
 
@@ -110,13 +207,35 @@ export default function DayplanTimeline() {
     }
   }
 
+  function isOverlapping(startA: Date, endA: Date, startB: Date, endB: Date) {
+    // Returns true if [startA, endA) overlaps with [startB, endB)
+    return startA < endB && startB < endA;
+  }
+
+  function hasOverlap(
+    events: typeof events,
+    idx: number,
+    newStart: Date,
+    newEnd: Date
+  ) {
+    return events.some((ev, i) => {
+      if (i === idx) return false;
+      return isOverlapping(newStart, newEnd, ev.start, ev.end);
+    });
+  }
+
   function onDragEnd(e: React.MouseEvent) {
+    if (activeIdx === null) return;
     setDragging(false);
     setDragPosition(null);
+
     if (!timelineRef.current) {
       setPreviewHour(null);
+      setActiveIdx(null);
+      setEventProps(null);
       return;
     }
+
     const rect = timelineRef.current.getBoundingClientRect();
     if (
       e.clientX >= rect.left &&
@@ -125,47 +244,83 @@ export default function DayplanTimeline() {
       e.clientY <= rect.bottom &&
       previewHour !== null
     ) {
+      // Get the current event
+      const currentEvent = events[activeIdx];
+
       // Set eventStart based on previewHour, keep duration the same
       const rounded = Math.round(previewHour * 4) / 4; // 15 min increments
-      const newStart = setHourAndMinute(eventStart, rounded);
-      const duration = eventEndHour - eventStartHour;
+      const duration =
+        eventProps?.originalDuration ||
+        getHourOffset(currentEvent.end) - getHourOffset(currentEvent.start);
+
+      const newStart = setHourAndMinute(currentEvent.start, rounded);
       let newEnd = new Date(newStart);
       newEnd.setHours(newStart.getHours() + Math.floor(duration));
       newEnd.setMinutes(
         newStart.getMinutes() + Math.round((duration % 1) * 60)
       );
-      // Clamp end to 24:00
-      if (getHourOffset(newEnd) > 24) {
-        newEnd = setHourAndMinute(newEnd, 24);
+
+      // Handle cases around midnight
+      const endHourOffset = getHourOffset(newEnd);
+      const startDay = newStart.getDate();
+
+      // Fix midnight boundary cases
+      if (endHourOffset >= 24 || endHourOffset === 0) {
+        newEnd = new Date(newStart);
+        // Set to midnight exactly
+        newEnd.setHours(0, 0, 0, 0);
+        // Advance to next day
+        newEnd.setDate(startDay + 1);
       }
-      // Invalidate drag if end is on the next day and not exactly 00:00:00
+
+      // Only reject if:
+      // 1. End is on next day (not original start day)
+      // 2. End is not exactly midnight
+      // 3. The event didn't originally end at midnight
+      const isNextDay = newEnd.getDate() !== startDay;
+      const isExactlyMidnight =
+        newEnd.getHours() === 0 &&
+        newEnd.getMinutes() === 0 &&
+        newEnd.getSeconds() === 0;
+
+      // Check for overlap with other events
       if (
-        (newEnd.getDate() !== newStart.getDate() ||
-          newEnd.getDay() !== newStart.getDay()) &&
-        !(
-          newEnd.getHours() === 0 &&
-          newEnd.getMinutes() === 0 &&
-          newEnd.getSeconds() === 0
-        )
+        hasOverlap(events, activeIdx, newStart, newEnd) ||
+        (isNextDay && !isExactlyMidnight && !eventProps?.originalEndsMidnight)
       ) {
         setPreviewHour(null);
         setDragOffset(null);
+        setActiveIdx(null);
+        setEventProps(null);
         return;
       }
-      setEventStart(newStart);
-      setEventEnd(newEnd);
+
+      // Update the event in the array
+      setEvents((prev) =>
+        prev.map((ev, i) =>
+          i === activeIdx ? { ...ev, start: newStart, end: newEnd } : ev
+        )
+      );
     }
+
     setPreviewHour(null);
     setDragOffset(null);
+    setActiveIdx(null);
+    setEventProps(null);
   }
 
   // Resize handlers
-  function onResizeStart(e: React.MouseEvent) {
-    setResizing(true);
-    setResizeStartY(e.clientY);
-    setResizeStartHeight(boxHours);
-    e.stopPropagation();
-    e.preventDefault();
+  function onResizeStart(idx: number) {
+    return (e: React.MouseEvent) => {
+      setActiveIdx(idx);
+      setResizing(true);
+      const start = getHourOffset(events[idx].start);
+      const end = getHourOffset(events[idx].end);
+      setResizeStartY(e.clientY);
+      setResizeStartHeight(end - start);
+      e.stopPropagation();
+      e.preventDefault();
+    };
   }
 
   function onResize(e: React.MouseEvent) {
@@ -173,7 +328,8 @@ export default function DayplanTimeline() {
       !resizing ||
       !timelineRef.current ||
       resizeStartY === null ||
-      resizeStartHeight === null
+      resizeStartHeight === null ||
+      activeIdx === null
     )
       return;
     const rect = timelineRef.current.getBoundingClientRect();
@@ -183,32 +339,59 @@ export default function DayplanTimeline() {
     // Prevent event from being shorter than 1.5 hours
     newBoxHours = Math.max(
       1.5,
-      Math.min(newBoxHours, TIMELINE_HOURS - eventStartHour)
+      Math.min(
+        newBoxHours,
+        TIMELINE_HOURS - getHourOffset(events[activeIdx].start)
+      )
     );
     // Snap to nearest 0.25 hour (15 min)
     newBoxHours = Math.round(newBoxHours * 4) / 4;
     // Set eventEnd based on new duration
-    const newEnd = setHourAndMinute(eventStart, eventStartHour + newBoxHours);
-    setEventEnd(newEnd);
+    const newEnd = setHourAndMinute(
+      events[activeIdx].start,
+      getHourOffset(events[activeIdx].start) + newBoxHours
+    );
+
+    // Prevent overlap on resize
+    if (hasOverlap(events, activeIdx, events[activeIdx].start, newEnd)) {
+      return;
+    }
+
+    setEvents((prev) =>
+      prev.map((ev, i) => (i === activeIdx ? { ...ev, end: newEnd } : ev))
+    );
   }
 
   function onResizeEnd() {
     setResizing(false);
     setResizeStartY(null);
     setResizeStartHeight(null);
+    setActiveIdx(null);
   }
 
   // Displayed time (rounded for display)
   const displayHour =
     dragging && previewHour !== null ? previewHour : eventStartHour;
   const displayStart = Math.round(displayHour * 4) / 4; // 15 min increments
-  const displayEnd = displayStart + boxHours;
-  const displayTopPercent = (displayHour / TIMELINE_HOURS) * 100;
+
+  // Calculate duration properly accounting for midnight ending events
+  const duration =
+    eventProps?.originalDuration || getEventDuration(eventStart, eventEnd);
+
+  const displayEnd = displayStart + duration;
 
   // For preview during drag, create preview Date objects
   const previewStartDate = setHourAndMinute(eventStart, displayStart);
-  const previewEndDate = setHourAndMinute(eventStart, displayEnd);
+  let previewEndDate;
 
+  // Handle midnight boundary correctly for preview
+  if (displayEnd >= 24) {
+    previewEndDate = new Date(previewStartDate);
+    previewEndDate.setHours(0, 0, 0, 0);
+    previewEndDate.setDate(previewEndDate.getDate() + 1);
+  } else {
+    previewEndDate = setHourAndMinute(previewStartDate, displayEnd);
+  }
   return (
     <div
       className="relative w-full min-h-96 h-[48rem] select-none flex flex-row"
@@ -226,29 +409,49 @@ export default function DayplanTimeline() {
         <DayplanTimelineGrid hours={HOURS} />
 
         <div className="relative flex-1 h-full">
-          {/* Draggable & resizable event box */}
-          {!dragging && (
-            <DayplanEventDraggableBox
-              topPercent={displayTopPercent}
-              heightPercent={heightPercent}
-              resizing={resizing}
-              onDragStart={onDragStart}
-              onResizeStart={onResizeStart}
-              previewStartDate={previewStartDate}
-              previewEndDate={previewEndDate}
-            />
-          )}
+          {/* Render all event boxes */}
+          {events.map((event, idx) => {
+            const startHour = getHourOffset(event.start);
+            const endHour = getHourOffset(event.end);
+            const topPercent = (startHour / TIMELINE_HOURS) * 100;
+            const heightPercent =
+              ((endHour - startHour) / TIMELINE_HOURS) * 100;
+            const isActive = activeIdx === idx && (dragging || resizing);
+
+            // Hide the static box for the active event while dragging
+            if (dragging && activeIdx === idx) return null;
+
+            return (
+              <DayplanEventDraggableBox
+                key={event.id}
+                topPercent={topPercent}
+                heightPercent={heightPercent}
+                resizing={isActive && resizing}
+                onDragStart={onDragStart(idx)}
+                onResizeStart={onResizeStart(idx)}
+                previewStartDate={event.start}
+                previewEndDate={event.end}
+                title={event.title}
+                description={event.description}
+              />
+            );
+          })}
         </div>
 
         {/* Floating event box while dragging */}
-        {dragging && dragPosition && (
+        {dragging && dragPosition && activeIdx !== null && (
           <div
             className="fixed z-50 w-[300px] -translate-x-1/2"
             style={{
               left: dragPosition.x,
               top: dragPosition.y - (dragOffset ?? 0),
               height: `${
-                (boxHours / TIMELINE_HOURS) *
+                ((eventProps?.originalDuration ||
+                  getEventDuration(
+                    events[activeIdx].start,
+                    events[activeIdx].end
+                  )) /
+                  TIMELINE_HOURS) *
                 (timelineRef.current?.clientHeight ?? 0)
               }px`,
               pointerEvents: "none",
@@ -263,6 +466,8 @@ export default function DayplanTimeline() {
               onResizeStart={() => {}}
               previewStartDate={previewStartDate}
               previewEndDate={previewEndDate}
+              title={events[activeIdx].title}
+              description={events[activeIdx].description}
             />
           </div>
         )}
