@@ -4,7 +4,7 @@ import LandingPage from "./pages/landing-page";
 import LoginPage from "./pages/login";
 import QuestionnairePage from "./pages/questionnaire";
 import DayplanPage from "./pages/dayplan";
-import QuestionairePage from "./pages/questionaire";
+import RegisterPage from "./pages/register";
 
 const routes: RouteObject[] = [
   {
@@ -17,16 +17,15 @@ const routes: RouteObject[] = [
   },
   {
     path: "/register",
-    //TODO Create register page
-    Component: LoginPage,
+    Component: RegisterPage
   },
   {
     path: "/",
     Component: DefaultLayout,
     children: [
       {
-        path: "/questionaire",
-        Component: QuestionairePage,
+        path: "/register",
+        Component: RegisterPage
       },
       {
         path: "/questionnaire",

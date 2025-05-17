@@ -2,6 +2,13 @@ import api from "@/api/config";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
+type RegisterData = {
+  username: string;
+  password: string;
+  name: string;
+  birthdate: string;
+};
+
 type LoginCredentials = {
   username: string;
   password: string;
@@ -26,11 +33,23 @@ const useAuth = () => {
       );
       localStorage.setItem("token", data.sessionId);
       if (data.formCompleted) {
-        //TODO: navigate to task list 
+        //TODO: navigate to task list
         navigate("/");
       } else {
-        navigate("/questionnaire?step=1")
+        navigate("/questionnaire?step=1");
       }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsPosting(false);
+    }
+  };
+
+  const register = async (data: RegisterData) => {
+    try {
+      setIsPosting(true);
+      await api.post("/user/register", data);
+      navigate("/questionnaire?step=1");
     } catch (e) {
       console.error(e);
     } finally {
@@ -41,6 +60,7 @@ const useAuth = () => {
   return {
     isPosting,
     login,
+    register,
   };
 };
 
