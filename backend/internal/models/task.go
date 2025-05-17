@@ -1,16 +1,15 @@
 package models
 
-import "gorm.io/gorm"
-
 type Task struct {
-	gorm.Model
-
+	ID               int
 	UserID           uint
 	Type             string
 	Completed        bool
 	Title            string
 	EstimatedMinutes int
 	Priority         int
+	Summary          string `gorm:"nullable"`
+	Rating           int    `gorm:"nullable"`
 }
 
 type TaskType struct {
