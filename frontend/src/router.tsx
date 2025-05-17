@@ -28,16 +28,14 @@ const routes: RouteObject[] = [
     path: "/questionnaire",
     Component: QuestionnairePage,
   },
-
+  {
+    path: "/dayplan",
+    Component: DayplanPage,
+  },
   {
     path: "/",
     Component: DefaultLayout,
-    children: [
-      {
-        path: "/dayplan",
-        Component: DayplanPage,
-      },
-    ],
+    children: [],
   },
 ];
 
