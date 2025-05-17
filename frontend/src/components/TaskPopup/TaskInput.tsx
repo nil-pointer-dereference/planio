@@ -43,14 +43,14 @@ export default function PopupInput({ setOpenParent }: PopupInputProps) {
   const [taskPriority, setTaskPriority] = useState<number>(0);
 
   const { data, error, isLoading } = useSWR<TaskType[]>(
-    "http://localhost:3000/tasktypes",
+    "http://localhost:5173/api/tasktypes",
     fetcher
   );
 
   async function handleSubmit(e: any) {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/task", {
+      const response = await fetch("http://localhost:5173/api/task", {
         method: "POST",
         body: JSON.stringify({
           title: title,
