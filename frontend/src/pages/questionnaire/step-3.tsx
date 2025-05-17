@@ -32,6 +32,7 @@ export default function StepThree(props: StepProps) {
       sportExperience: 1,
       wakeUpTime: "08:00",
       sleepHours: 4,
+      doesWork: false,
     },
   });
 

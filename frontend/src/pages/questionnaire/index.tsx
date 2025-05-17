@@ -58,7 +58,7 @@ export default function QuestionnairePage() {
     ? Number(searchParams.get("step"))
     : null;
 
-  if (!step || Number.isNaN(step) || step > 3 || step < 1) {
+  if (!step || Number.isNaN(step) || step > 2 || step < 1) {
     return <Navigate to={"/questionnaire?step=1"}></Navigate>;
   }
 
