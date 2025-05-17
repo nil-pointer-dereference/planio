@@ -104,9 +104,9 @@ export default function DayplanEventBox({
         className="pointer-events-none absolute left-0 w-full"
         style={{
           bottom: 0,
-          height: "16px", // Lowered from 44px to 16px
+          height: "16px",
           background:
-            "linear-gradient(to top, #bbf7d0 100%, rgba(187,247,208,0) 0%)",
+            "linear-gradient(to top, rgba(187,247,208,1) 0%, rgba(187,247,208,0) 100%)",
           zIndex: 1,
         }}
         id="resize-gradient-bg"
