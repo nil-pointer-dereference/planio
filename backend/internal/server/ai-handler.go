@@ -112,13 +112,37 @@ type SaveTask struct {
 }
 
 func HandleSaveTasks(c *gin.Context) {
-	var tasks []models.Task
 	var savetasks []SaveTask
-	err := c.ShouldBindJSON(&savetasks)
+	userFromSession, err := GetAuthenticated(c.GetHeader("Session"))
+	err = c.ShouldBindJSON(&savetasks)
 	if err != nil {
 		c.AbortWithStatus(400)
 	}
-	fmt.Println(savetasks)
-	fmt.Println(tasks)
+	//type Task struct {
+	//	ID               int
+	//	UserID           uint
+	//	Type             string
+	//	Completed        bool
+	//	Title            string
+	//	EstimatedMinutes int
+	//	Priority         int
+	//	Summary          string `gorm:"nullable"`
+	//	Rating           int    `gorm:"nullable"`
+	//}
+	var tasks []models.Task
+	for _, savetask := range savetasks {
+		tasks = append(tasks, models.Task{
+			ID:               savetask.ID,
+			Title:            savetask.Title,
+			UserID:           uint(userFromSession.Id),
+			Type:             savetask.Type,
+			Completed:        savetask.Completed,
+			EstimatedMinutes: int(savetask.End.Sub(savetask.Start).Minutes()),
+			Priority:         3,
+			Summary:          "",
+			Rating:           0,
+		})
+	}
+	database.DB.Save(&tasks)
 	c.JSON(200, tasks)
 }
