@@ -1,5 +1,6 @@
 import api from "@/api/config";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 type LoginCredentials = {
   username: string;
@@ -9,10 +10,12 @@ type LoginCredentials = {
 type LoginResponse = {
   sessionId: string;
   username: string;
+  formCompleted: boolean;
 };
 
 const useAuth = () => {
   const [isPosting, setIsPosting] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const login = async (credentials: LoginCredentials) => {
     try {
@@ -22,6 +25,12 @@ const useAuth = () => {
         credentials,
       );
       localStorage.setItem("token", data.sessionId);
+      if (data.formCompleted) {
+        //TODO: navigate to task list 
+        navigate("/");
+      } else {
+        navigate("/questionnaire?step=1")
+      }
     } catch (e) {
       console.error(e);
     } finally {

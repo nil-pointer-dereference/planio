@@ -1,6 +1,5 @@
 import LoadingScreen from "@/components/loading-screen";
 import H2 from "@/components/typography/h2";
-import H3 from "@/components/typography/h3";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,7 +19,6 @@ import {
 import { Input } from "@/components/ui/input";
 import useAuth from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -32,7 +30,6 @@ type LoginSchema = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const { isPosting, login } = useAuth(); 
-  const navigate = useNavigate();
   const a = useForm<LoginSchema>({
     defaultValues: {
       username: "",
@@ -43,18 +40,17 @@ export default function LoginPage() {
   const handleSubmit = a.handleSubmit(async (fields) => {
     console.log(fields);
     await login(fields);
-    navigate("/questionnaire?step=1")
   });
 
   return (
     <div className="flex flex-col w-full justify-center items-center">
-      <Card className="pl-50 pr-50 pt-10 pb-10">
+      <Card className="pl-50 pr-50 pt-10 pb-20">
         <CardHeader>
           <CardTitle>
             <H2>Zaloguj się</H2>
           </CardTitle>
           <CardDescription>
-            Miło cię widzieć z powrotem :) Zaloguj się, aby przejrzeć swój plan
+            Miło cię widzieć :) Zaloguj się, aby przejrzeć swój plan
             na dzisiaj!
           </CardDescription>
         </CardHeader>
