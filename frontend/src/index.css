@@ -107,24 +107,26 @@ body {
 
 .fluid-text-animation {
   background: linear-gradient(
-    90deg,
-    var(--foreground) 5%,
-    var(--primary) 10%,
-    var(--background) 20%,
-    var(--foreground) 30%,
-    var(--foreground) 40%
+    115deg,
+    var(--primary) 0%,
+    var(--primary) 30%,
+    white 45%,
+    white 48%,
+    var(--primary) 65%,
+    var(--primary) 100%
   );
   background-size: 300% 100%;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  animation: gradient-shift 15s linear infinite;
+  animation: gradient-shift 10s linear infinite;
 }
 
 @keyframes gradient-shift {
   0% {
     background-position: 0% 50%;
   }
+
   100% {
     background-position: 300% 50%;
   }
