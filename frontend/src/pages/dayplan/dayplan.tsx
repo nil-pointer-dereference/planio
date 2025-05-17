@@ -22,7 +22,14 @@ export default function Dayplan() {
             <Button variant="outline" size="icon">
               <ChevronLeft />
             </Button>
-            <div className="">piątek - 16.05.2025</div>
+            <div className="">
+              {new Date().toLocaleDateString("pl-PL", {
+                weekday: "long",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
+            </div>
             <Button variant="outline" size="icon">
               <ChevronRight />
             </Button>
