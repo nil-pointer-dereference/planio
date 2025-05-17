@@ -17,8 +17,11 @@ const useAuth = () => {
   const login = async (credentials: LoginCredentials) => {
     try {
       setIsPosting(true);
-      const response = await api.post<LoginResponse>("/login", credentials);
-      localStorage.setItem("token", response.data.sessionId);
+      const { data } = await api.post<LoginResponse>(
+        "/user/login",
+        credentials,
+      );
+      localStorage.setItem("token", data.sessionId);
     } catch (e) {
       console.error(e);
     } finally {
