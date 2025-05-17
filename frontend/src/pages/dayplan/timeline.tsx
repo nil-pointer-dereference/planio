@@ -113,16 +113,6 @@ export default function DayplanTimeline() {
     );
   }
 
-  function debounceRequest(callback: unknown, delay = 700) {
-    let timer: any;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        callback(...args);
-      }, delay);
-    };
-  }
-
   const sendRequest = async (data: any) => {
     try {
       const response = await axios.put("http://localhost:5173/api/ai", data, {
@@ -139,8 +129,15 @@ export default function DayplanTimeline() {
     }
   };
 
-  console.log(events);
-  debounceRequest(sendRequest(events), 700);
+  let timer;
+  function handleEventChange(events) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      sendRequest(events);
+    }, 700);
+  }
+
+  handleEventChange(events);
 
   // Update the main timeline container height
   return (
