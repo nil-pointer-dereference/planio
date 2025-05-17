@@ -60,7 +60,10 @@ func HandlerPostAI(c *gin.Context) {
 		},
 		&[]models.Task{}, // empty notes
 		"raw generated tasks in json, do not wrap the json codes in JSON markdown markers. do not append any data from me."+
-			"You have 24 hour day. You have user data. task format: Type string, Completed bool, Title (max 4 words) string, Description (max 2 sentences) string EstimatedMinutes int."+
+			"You have 24 hour day. You have user data. task format: Type string, Completed bool, Title (max 4 words) string, Description (max 2 sentences) string"+
+			"EstimatedMinutes int means how long the task should take in minutes."+
+			"Start hour can be any :10, :15, :20, :25, :30, etc."+
+			"Do also startDate and endDate of format dd-MM-YYYY-HH:mm:ss"+
 			"if you consider sports, mind Experience in sports. Tasks should have start hour and mind their estimatedminutes."+
 			"You can adjust sleep time +/- 1 hour. If you do, tell it in the description of sleep."+
 			"Only one sleep session. Think about it as when to go to sleep and start other tasks after the sleep task period."+
@@ -69,7 +72,8 @@ func HandlerPostAI(c *gin.Context) {
 			"No tasks should overlap. Meaning that start hour + estimated minutes sum should not overflow on other task's start hour + estimated minutes, too."+
 			"Work shift time should always be in the same time, no matter what. Meaning that task of Type 'Work' can be only one within the designated hours and no more."+
 			"Do not mention any medication or things that do not require doctor's diagnosis."+
-			"Try to make tasks lightweight.",
+			"Try to make tasks lightweight."+
+			"Must keep at least 10 minute breaks between all tasks.",
 	)
 
 	raw, err := aiCtx.CreateMsg().WithFormatting().WithTasks().RunPrompt(c)
