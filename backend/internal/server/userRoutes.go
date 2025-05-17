@@ -68,8 +68,8 @@ func HandlerUserLogin(c *gin.Context) {
 	}
 	auth, _ := CreateAuthenticated(user)
 	c.JSON(http.StatusOK, gin.H{
-		"sessionId:": auth.SessionId,
-		"username:":  user.Username,
+		"sessionId": auth.SessionId,
+		"username":  user.Username,
 	})
 }
 
