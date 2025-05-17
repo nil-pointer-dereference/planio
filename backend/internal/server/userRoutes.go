@@ -57,19 +57,27 @@ func HandlerUserLogin(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	username := req.Username
-	password := req.Password
+
 	var user models.User
-	if err := database.DB.Where("username = ?", username).Where("password = ?", password).First(&user).Error; err != nil {
+
+	if err := database.DB.Where("username = ?", req.Username).Where("password = ?", req.Password).First(&user).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 			"message": "User not found.",
 		})
 		return
 	}
+
+	var userForm models.UserForm
+	formCompleted := false
+	if err := database.DB.Where("user_id = ?", user.Id).First(&userForm).Error; err != nil {
+		formCompleted = true
+	}
+
 	auth, _ := CreateAuthenticated(user)
 	c.JSON(http.StatusOK, gin.H{
-		"sessionId": auth.SessionId,
-		"username":  user.Username,
+		"sessionId":     auth.SessionId,
+		"username":      user.Username,
+		"formCompleted": formCompleted,
 	})
 }
 
