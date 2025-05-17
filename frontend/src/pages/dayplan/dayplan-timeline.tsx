@@ -3,10 +3,18 @@ import DayplanEventDraggableBox from "./event-draggable-box";
 import DayplanTimelineGrid from "./timeline-grid";
 import DayplanTimelineNumbers from "./timeline-numbers";
 import TimelineOverlay from "./timeline-overlay";
+import {
+  TIMELINE_HOURS,
+  getHourFromPosition,
+  getHourOffset,
+  getEventDuration,
+  setHourAndMinute,
+  isOverlapping,
+  hasOverlap,
+} from "./timeline-utils";
 
 // Change HOURS to include 0 as the first value
 const HOURS = Array.from({ length: 13 }, (_, i) => i * 2);
-const TIMELINE_HOURS = 24;
 
 // API response interface
 interface ApiTask {
@@ -27,55 +35,6 @@ interface DayplanEvent {
   description: string;
   type: string;
   completed: boolean;
-}
-
-function getHourFromPosition(y: number, timelineHeight: number) {
-  // Clamp y to timeline
-  const clampedY = Math.max(0, Math.min(y, timelineHeight));
-  // Calculate hour as a float for smooth dragging
-  const hour = (clampedY / timelineHeight) * TIMELINE_HOURS;
-  return Math.max(0, Math.min(hour, TIMELINE_HOURS - 0.5));
-}
-
-// Helper to get hour offset from midnight
-function getHourOffset(date: Date) {
-  // If it's midnight (00:00:00), return 24 only if it's a different date than "today"
-  if (
-    date.getHours() === 0 &&
-    date.getMinutes() === 0 &&
-    date.getSeconds() === 0
-  ) {
-    // Need to check if this is actually intended to be end-of-day by looking at context
-    // For now, assume 00:00 means end-of-day (24:00) if used as an end time
-    return 0; // Still return 0, but we'll handle this specially elsewhere
-  }
-  return date.getHours() + date.getMinutes() / 60;
-}
-
-// Add this helper function to consistently handle midnight calculations
-function getEventDuration(start: Date, end: Date): number {
-  let endHour = getHourOffset(end);
-
-  // If end time is midnight (00:00), treat it as 24:00 for duration calculation
-  if (
-    endHour === 0 &&
-    end.getHours() === 0 &&
-    end.getMinutes() === 0 &&
-    end.getSeconds() === 0 &&
-    end.getDate() !== start.getDate()
-  ) {
-    endHour = 24;
-  }
-
-  return endHour - getHourOffset(start);
-}
-// Helper to set hour and minute on a date
-function setHourAndMinute(date: Date, hourFloat: number) {
-  const hours = Math.floor(hourFloat);
-  const minutes = Math.round((hourFloat - hours) * 60);
-  const newDate = new Date(date);
-  newDate.setHours(hours, minutes, 0, 0);
-  return newDate;
 }
 
 export default function DayplanTimeline() {
@@ -228,23 +187,6 @@ export default function DayplanTimeline() {
     } else {
       setPreviewHour(null);
     }
-  }
-
-  function isOverlapping(startA: Date, endA: Date, startB: Date, endB: Date) {
-    // Returns true if [startA, endA) overlaps with [startB, endB)
-    return startA < endB && startB < endA;
-  }
-
-  function hasOverlap(
-    events: typeof events,
-    idx: number,
-    newStart: Date,
-    newEnd: Date
-  ) {
-    return events.some((ev, i) => {
-      if (i === idx) return false;
-      return isOverlapping(newStart, newEnd, ev.start, ev.end);
-    });
   }
 
   function onDragEnd(e: React.MouseEvent) {
