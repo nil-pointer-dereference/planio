@@ -28,18 +28,10 @@ export default function StepTwo(props: StepProps) {
   const handleSubmit = a.handleSubmit((fields) => {
     props.updateFormState(fields);
     setParams((params) => {
-      params.set("step", "3");
+      params.set("step", "2");
       return params;
     });
   });
-
-  const handleBack = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    setParams((params) => {
-      params.set("step", "1");
-      return params;
-    });
-  };
 
   return (
     <Card>
@@ -127,7 +119,7 @@ export default function StepTwo(props: StepProps) {
                 <FormItem className="pt-5">
                   <FormLabel>Rozrywka</FormLabel>
                   <FormDescription>
-                    Jakie są twoje ulubione spoosby na rozrywkę?
+                    Jakie są twoje ulubione sposoby na rozrywkę?
                   </FormDescription>
                   <FormControl>
                     <Textarea
@@ -141,7 +133,7 @@ export default function StepTwo(props: StepProps) {
               )}
             ></FormField>
             <div className="w-full flex pt-10 pl-5 pr-5">
-              <Button type="submit" onClick={handleBack}>
+              <Button disabled type="submit">
                 Wróć
               </Button>
               <div className="flex-grow"></div>
