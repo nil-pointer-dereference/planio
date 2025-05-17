@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import DayplanEventDraggableBox from "./event-draggable-box";
 import DayplanTimelineGrid from "./timeline-grid";
 import DayplanTimelineNumbers from "./timeline-numbers";
@@ -6,6 +6,27 @@ import DayplanTimelineNumbers from "./timeline-numbers";
 // Change HOURS to include 0 as the first value
 const HOURS = Array.from({ length: 13 }, (_, i) => i * 2);
 const TIMELINE_HOURS = 24;
+
+// API response interface
+interface ApiTask {
+  Completed: boolean;
+  Description: string;
+  EstimatedMinutes: number;
+  StartHour: number;
+  Title: string;
+  Type: string;
+}
+
+// DayplanEvent interface
+interface DayplanEvent {
+  id: number;
+  start: Date;
+  end: Date;
+  title: string;
+  description: string;
+  type: string;
+  completed: boolean;
+}
 
 function getHourFromPosition(y: number, timelineHeight: number) {
   // Clamp y to timeline
@@ -58,72 +79,73 @@ function setHourAndMinute(date: Date, hourFloat: number) {
 
 export default function DayplanTimeline() {
   const timelineRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Store event start/end as Date objects
-  // Removed unused eventStart and eventEnd state to avoid redeclaration error.
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      start: (() => {
-        const d = new Date();
-        d.setHours(8, 0, 0, 0);
-        return d;
-      })(),
-      end: (() => {
-        const d = new Date();
-        d.setHours(12, 0, 0, 0);
-        return d;
-      })(),
-      title: "Morning Workshop",
-      description: "Intro to React and TypeScript.",
-    },
-    {
-      id: 2,
-      start: (() => {
-        const d = new Date();
-        d.setHours(12, 30, 0, 0);
-        return d;
-      })(),
-      end: (() => {
-        const d = new Date();
-        d.setHours(14, 0, 0, 0);
-        return d;
-      })(),
-      title: "Lunch & Networking",
-      description: "Buffet lunch and networking session.",
-    },
-    {
-      id: 3,
-      start: (() => {
-        const d = new Date();
-        d.setHours(14, 30, 0, 0);
-        return d;
-      })(),
-      end: (() => {
-        const d = new Date();
-        d.setHours(16, 0, 0, 0);
-        return d;
-      })(),
-      title: "Afternoon Panel",
-      description: "Panel: Future of IT careers.",
-    },
-    {
-      id: 4,
-      start: (() => {
-        const d = new Date();
-        d.setHours(16, 30, 0, 0);
-        return d;
-      })(),
-      end: (() => {
-        const d = new Date();
-        d.setHours(18, 15, 0, 0);
-        return d;
-      })(),
-      title: "Closing Keynote",
-      description:
-        "Keynote: Embracing Change in Tech. Join us for a deep dive into the latest industry trends and future outlook.",
-    },
-  ]);
+  const [events, setEvents] = useState<DayplanEvent[]>([]);
+
+  // Fetch events from API
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:5173/api/ai", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Session: "da5b8893-d6ca-5c1c-9a9c-91f40a2a3649",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data: ApiTask[] = await response.json();
+
+        // Skip the first element (index 0) as requested
+        const tasksToProcess = data.slice(1);
+
+        // Transform API tasks into Dayplan events
+        const transformedEvents: DayplanEvent[] = tasksToProcess.map(
+          (task, index) => {
+            const today = new Date();
+
+            // Create start date from StartHour
+            const start = new Date(today);
+            start.setHours(task.StartHour, 0, 0, 0);
+
+            // Create end date by adding EstimatedMinutes to start
+            const end = new Date(start);
+            const endMinutes = end.getMinutes() + task.EstimatedMinutes;
+            end.setMinutes(endMinutes);
+
+            return {
+              id: index + 1,
+              start,
+              end,
+              title: task.Title,
+              description: task.Description,
+              type: task.Type,
+              completed: task.Completed,
+            };
+          }
+        );
+
+        console.log(transformedEvents);
+
+        setEvents(transformedEvents);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch events:", err);
+        setError(err instanceof Error ? err.message : "Unknown error occurred");
+        setLoading(false);
+      }
+    }
+
+    fetchEvents();
+  }, []);
 
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -392,6 +414,25 @@ export default function DayplanTimeline() {
   } else {
     previewEndDate = setHourAndMinute(previewStartDate, displayEnd);
   }
+
+  // Show loading indicator while fetching data
+  if (loading) {
+    return (
+      <div className="w-full min-h-96 h-[48rem] flex items-center justify-center">
+        <div className="text-xl">Loading events...</div>
+      </div>
+    );
+  }
+
+  // Show error message if fetch failed
+  if (error) {
+    return (
+      <div className="w-full min-h-96 h-[48rem] flex items-center justify-center">
+        <div className="text-red-500 text-xl">Error: {error}</div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="relative w-full min-h-96 h-[48rem] select-none flex flex-row"
