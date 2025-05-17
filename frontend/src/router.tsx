@@ -9,12 +9,12 @@ import QuestionairePage from "./pages/questionaire";
 const routes: RouteObject[] = [
   {
     path: "/",
+    Component: LandingPage,
+  },
+  {
+    path: "/",
     Component: DefaultLayout,
     children: [
-      {
-        path: "/",
-        Component: LandingPage,
-      },
       {
         path: "/login",
         Component: LoginPage,
