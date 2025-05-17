@@ -9,18 +9,40 @@ type PopupInputProps = {
   setOpenParent?: (value: boolean) => void;
 };
 
+interface TaskSummary {
+  ID: number;
+  Summary: string;
+  Rating: number;
+}
+
 export default function PopupInput({ setOpenParent }: PopupInputProps) {
   const [summary, setSummary] = useState<string>(" ");
   const [taskGrade, setTaskGrade] = useState<number>(0);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
-    console.log(summary);
-    console.log(taskGrade);
+    const response = await fetch("http://localhost:3000/task", {
+      method: "PUT",
+      body: JSON.stringify({
+        id: 1,
+        summary: summary,
+        rating: taskGrade,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.statusMessage);
+    }
+
+    const data = await response.json();
+    console.log("Task summarized successfully:", data);
+
     if (setOpenParent) {
       setOpenParent(false);
     }
   }
+
   return (
     <div className="w-full h-full bg-accent border-3 border-background p-8 rounded-xl">
       <form
@@ -48,10 +70,7 @@ export default function PopupInput({ setOpenParent }: PopupInputProps) {
             className="ease-in-out text-background bg-primary w-12 h-12 p-2 rounded-4xl absolute bottom-2 right-4 cursor-pointer hover:bg-background hover:text-primary"
           ></LucideMic>
         </div>
-        <Label
-          htmlFor="summary"
-          className="text-background text-lg font-medium"
-        >
+        <Label htmlFor="slider" className="text-background text-lg font-medium">
           Jak oceniłbyś satysfakcje z tego zadania (1-5)?
         </Label>
         <div className="w-full">
@@ -59,6 +78,8 @@ export default function PopupInput({ setOpenParent }: PopupInputProps) {
             min={1}
             max={5}
             value={[taskGrade]}
+            id="slider"
+            name="slider"
             onValueChange={([val]) => setTaskGrade(val)}
           ></Slider>
           <h1 className="text-background mt-2">{taskGrade}</h1>
