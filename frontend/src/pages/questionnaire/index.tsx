@@ -2,7 +2,6 @@ import { Navigate, useSearchParams } from "react-router";
 import StepOne from "./step-1";
 import StepTwo from "./step-2";
 import StepThree from "./step-3";
-import { cn } from "@/lib/utils";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
@@ -16,6 +15,7 @@ const questionnaireSchema = z.object({
   name: z.string(),
   interests: z.string(),
   doesWork: z.boolean(),
+  workTime: z.string(),
   goals: z.string(),
   freeTimeActivities: z.string(),
   rest: z.string(),
@@ -40,6 +40,7 @@ export default function QuestionnairePage() {
     name: "",
     interests: "",
     doesWork: false,
+    workTime: "",
     goals: "",
     freeTimeActivities: "",
     rest: "",
@@ -58,9 +59,9 @@ export default function QuestionnairePage() {
     ? Number(searchParams.get("step"))
     : null;
 
-  if (!step || Number.isNaN(step) || step > 2 || step < 1) {
-    return <Navigate to={"/questionnaire?step=1"}></Navigate>;
-  }
+//  if (!step || Number.isNaN(step) || step > 2 || step < 1) {
+//    return <Navigate to={"/questionnaire?step=1"}></Navigate>;
+//  }
 
   const updateFormState = (fields: Partial<QuestionnaireSchema>) => {
     setForm({ ...form, ...(fields as QuestionnaireSchema) });
@@ -107,7 +108,6 @@ export default function QuestionnairePage() {
         <ArrowLeft className="size-6 transition-transform duration-300 ease-in-out group-hover:-translate-x-2" />
         <span className="ml-2">Powrót</span>
       </Link>
-
       <BotMessageSquare className="inline text-primary size-[8rem] pb-2" />
       <div className="flex gap-2 items-center ">
         <h1 className="lg:text-[3rem] text-3xl text-center flex items-center gap-4 fluid-text-animation group">
@@ -118,15 +118,11 @@ export default function QuestionnairePage() {
         {getStepDescription(step)}
       </p>
       <div className="w-[450px] relative m-5 pb-4">
-        <Progress max={100} value={(step - 1) * 50}></Progress>
+        <Progress max={100} value={step * 50}></Progress>
       </div>
-      {step === 1 && <StepOne updateFormState={updateFormState}></StepOne>}
-      {step === 2 && <StepTwo updateFormState={updateFormState}></StepTwo>}
-      {step === 3 && (
-        <StepThree updateFormState={finishQuestionnaire}>
-          <LoadingScreen open={isPosting}></LoadingScreen>
-        </StepThree>
-      )}
+      {step === 1 && <StepTwo updateFormState={updateFormState}></StepTwo>}
+      {step === 2 && <StepThree updateFormState={finishQuestionnaire} />}
+      <LoadingScreen open={isPosting}></LoadingScreen>
     </div>
   );
 }

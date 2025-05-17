@@ -112,6 +112,9 @@ export default function DayplanTimeline() {
     );
   }
 
+  console.log(events)
+
+
   // Update the main timeline container height
   return (
     <div
@@ -121,6 +124,7 @@ export default function DayplanTimeline() {
       onMouseUp={resizing ? onResizeEnd : onDragEnd}
       onMouseLeave={resizing ? onResizeEnd : onDragEnd}
     >
+
       {/* Numbers column */}
       <DayplanTimelineNumbers hours={HOURS} />
 

@@ -21,10 +21,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import TimePickerRange from "@/components/time-picker-range";
+import { Switch } from "@/components/ui/switch";
+import { useState } from "react";
 const hours = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export default function StepThree(props: StepProps) {
   const [_, setParams] = useSearchParams();
+  const [disabled, setDisabled] = useState<boolean>(false);
   const a = useForm<Partial<QuestionnaireSchema>>({
     defaultValues: {
       levelOfStress: 1,
@@ -33,6 +37,7 @@ export default function StepThree(props: StepProps) {
       wakeUpTime: "08:00",
       sleepHours: 4,
       doesWork: false,
+      workTime: "08:00-16:00",
     },
   });
 
@@ -43,7 +48,7 @@ export default function StepThree(props: StepProps) {
   const handleBack = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setParams((params) => {
-      params.set("step", "2");
+      params.set("step", "1");
       return params;
     });
   };
@@ -183,6 +188,47 @@ export default function StepThree(props: StepProps) {
                 )}
               ></FormField>
             </div>
+            <FormField
+              control={a.control}
+              name={"doesWork"}
+              render={({ field }) => (
+                <FormItem className="pt-5">
+                  <FormLabel>Czy pracujesz?</FormLabel>
+                  <div className="flex my-4 justify-start items-center">
+                    <p className="text-sm mr-2 text-muted-foreground">Nie</p>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(val) => {
+                          setDisabled(val);
+                          field.onChange(val);
+                        }}
+                      ></Switch>
+                    </FormControl>
+                    <p className="text-sm ml-2 text-muted-foreground">Tak</p>
+                  </div>
+                </FormItem>
+              )}
+            ></FormField>
+            <FormField
+              control={a.control}
+              name={"workTime"}
+              render={({ field }) => (
+                <FormItem className="pt-5">
+                  <FormLabel className={!disabled ? "text-muted-foreground" : ""}>Godziny pracy</FormLabel>
+                  <FormDescription className={!disabled ? "text-gray-500" : ""}>
+                    W jakich godzinach pracujesz?
+                  </FormDescription>
+                  <FormControl>
+                    <TimePickerRange
+                      disabled={!disabled}
+                      value={field.value!}
+                      setValue={field.onChange}
+                    ></TimePickerRange>
+                  </FormControl>
+                </FormItem>
+              )}
+            ></FormField>
             <div className="w-full flex pt-10 pl-5 pr-5">
               <Button type="submit" onClick={handleBack}>
                 Wróć

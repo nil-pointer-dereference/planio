@@ -1,4 +1,3 @@
-import type { ControllerRenderProps } from "react-hook-form";
 import { ScrollArea } from "../ui/scroll-area";
 import {
   Select,
@@ -7,7 +6,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import type { QuestionnaireSchema } from "@/pages/questionnaire";
 
 type TimePickerProps = {
   taskTime: number;
