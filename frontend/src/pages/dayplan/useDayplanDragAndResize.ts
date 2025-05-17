@@ -171,7 +171,7 @@ export function useDayplanDragAndResize(events: DayplanEvent[], setEvents: (fn: 
     const hoursPerPx = TIMELINE_HOURS / rect.height;
     let newBoxHours = resizeStartHeight + deltaY * hoursPerPx;
     newBoxHours = Math.max(
-      1.5,
+      0.25,
       Math.min(
         newBoxHours,
         TIMELINE_HOURS - getHourOffset(events[activeIdx].start)

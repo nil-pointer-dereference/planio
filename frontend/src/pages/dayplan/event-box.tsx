@@ -93,10 +93,10 @@ export default function DayplanEventBox({
       style={{
         top,
         height,
-        paddingTop: "0.75rem",
-        paddingBottom: "0.75rem",
-        paddingLeft: "1rem",
-        paddingRight: "1rem",
+        paddingTop: "0.2rem", // Reduced from 0.75rem
+        paddingBottom: "0.2rem", // Reduced from 0.75rem
+        paddingLeft: "0.5rem", // Optional: reduce horizontal padding too
+        paddingRight: "0.5rem",
       }}
     >
       {/* Gradient background behind resize handle */}
