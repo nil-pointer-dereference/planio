@@ -89,14 +89,14 @@ export default function DayplanEventBox({
   return (
     <div
       ref={boxRef}
-      className="absolute left-8 right-4 z-10 flex flex-col justify-start items-start bg-green-200 rounded-lg shadow overflow-hidden"
+      className="absolute left-1/2 -translate-x-1/2 w-[130%] z-10 flex flex-col justify-start items-start bg-green-200 rounded-lg shadow overflow-hidden"
       style={{
         top,
         height,
-        paddingTop: "0.2rem", // Reduced from 0.75rem
-        paddingBottom: "0.2rem", // Reduced from 0.75rem
-        paddingLeft: "0.5rem", // Optional: reduce horizontal padding too
-        paddingRight: "0.5rem",
+        paddingTop: "0.3rem",
+        paddingBottom: "0.3rem",
+        paddingLeft: "0.75rem",
+        paddingRight: "0.75rem",
       }}
     >
       {/* Gradient background behind resize handle */}

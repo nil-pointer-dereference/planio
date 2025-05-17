@@ -115,7 +115,7 @@ export default function DayplanTimeline() {
   // Main timeline layout
   return (
     <div
-      className="relative w-full min-h-96 h-[48rem] select-none flex flex-row"
+      className="relative w-full min-h-96 h-[60rem] select-none flex flex-row" // h-[48rem] -> h-[60rem]
       ref={timelineRef}
       onMouseMove={resizing ? onResize : onDrag}
       onMouseUp={resizing ? onResizeEnd : onDragEnd}

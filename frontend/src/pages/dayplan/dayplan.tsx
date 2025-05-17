@@ -13,7 +13,9 @@ import DayplanTimeline from "./timeline";
 export default function Dayplan() {
   return (
     <>
-      <Card className="w-1/6 min-w-80 ">
+      <Card className="w-1/4 min-w-[32rem]">
+        {" "}
+        {/* Was w-1/6 min-w-80 */}
         <CardHeader>
           <CardTitle>Plan dnia</CardTitle>
           <CardDescription className="flex flex-row items-center justify-around pt-4">
