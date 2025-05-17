@@ -1,21 +1,18 @@
-import { useRef, useState, useEffect } from "react";
-import DayplanEventDraggableBox from "./event-draggable-box";
 import DayplanTimelineGrid from "./timeline-grid";
 import DayplanTimelineNumbers from "./timeline-numbers";
 import TimelineOverlay from "./timeline-overlay";
 import {
   TIMELINE_HOURS,
-  getHourFromPosition,
   getHourOffset,
   getEventDuration,
   setHourAndMinute,
-  isOverlapping,
-  hasOverlap,
 } from "./timeline-utils";
 import DayplanEventList from "./event-list";
 import FloatingEventPreview from "./floating-event-preview";
 import { useDayplanEvents } from "./useDayplanEvents";
 import { useDayplanDragAndResize } from "./useDayplanDragAndResize";
+
+// ...existing imports...
 
 // Change HOURS to include 0 as the first value
 const HOURS = Array.from({ length: 13 }, (_, i) => i * 2);
@@ -30,7 +27,7 @@ interface ApiTask {
   Type: string;
 }
 
-// DayplanEvent interface
+// DayplanEvent interface for timeline events
 interface DayplanEvent {
   id: number;
   start: Date;
@@ -42,8 +39,10 @@ interface DayplanEvent {
 }
 
 export default function DayplanTimeline() {
+  // Fetch events and loading/error state from custom hook
   const { events, setEvents, loading, error } = useDayplanEvents();
 
+  // Drag and resize logic from custom hook
   const {
     timelineRef,
     activeIdx,
@@ -61,27 +60,32 @@ export default function DayplanTimeline() {
     onResizeEnd,
   } = useDayplanDragAndResize(events, setEvents);
 
-  const event = activeIdx !== null ? events[activeIdx] : null;
-  const eventStart = event?.start ?? new Date();
-  const eventEnd = event?.end ?? new Date();
+  // Get the currently active event (if any)
+  const event: DayplanEvent | null =
+    activeIdx !== null ? events[activeIdx] : null;
+  const eventStart: Date = event?.start ?? new Date();
+  const eventEnd: Date = event?.end ?? new Date();
 
-  const eventStartHour = getHourOffset(eventStart);
+  // Calculate the hour offset for the event start
+  const eventStartHour: number = getHourOffset(eventStart);
 
-  const displayHour =
+  // Determine which hour to display during drag
+  const displayHour: number =
     dragging && previewHour !== null ? previewHour : eventStartHour;
-  const displayStart = Math.round(displayHour * 4) / 4; // 15 min increments
+  // Snap to 15-minute increments
+  const displayStart: number = Math.round(displayHour * 4) / 4;
 
-  // Calculate duration properly accounting for midnight ending events
-  const duration =
+  // Calculate event duration, accounting for midnight
+  const duration: number =
     eventProps?.originalDuration || getEventDuration(eventStart, eventEnd);
 
-  const displayEnd = displayStart + duration;
+  const displayEnd: number = displayStart + duration;
 
-  // For preview during drag, create preview Date objects
-  const previewStartDate = setHourAndMinute(eventStart, displayStart);
-  let previewEndDate;
+  // Create preview Date objects for drag/resize preview
+  const previewStartDate: Date = setHourAndMinute(eventStart, displayStart);
+  let previewEndDate: Date;
 
-  // Handle midnight boundary correctly for preview
+  // Handle midnight boundary for preview
   if (displayEnd >= 24) {
     previewEndDate = new Date(previewStartDate);
     previewEndDate.setHours(0, 0, 0, 0);
@@ -108,6 +112,7 @@ export default function DayplanTimeline() {
     );
   }
 
+  // Main timeline layout
   return (
     <div
       className="relative w-full min-h-96 h-[48rem] select-none flex flex-row"
@@ -119,11 +124,12 @@ export default function DayplanTimeline() {
       {/* Numbers column */}
       <DayplanTimelineNumbers hours={HOURS} />
 
-      {/* Timeline lines and event box column */}
+      {/* Timeline grid and event boxes */}
       <div className="relative flex-1 h-full">
         {/* Background timeline lines */}
         <DayplanTimelineGrid hours={HOURS} />
 
+        {/* Event boxes */}
         <div className="relative flex-1 h-full">
           <DayplanEventList
             events={events}
