@@ -73,7 +73,10 @@ func HandlerPostAI(c *gin.Context) {
 			"Work shift time should always be in the same time, no matter what. Meaning that task of Type 'Work' can be only one within the designated hours and no more."+
 			"Do not mention any medication or things that do not require doctor's diagnosis."+
 			"Try to make tasks lightweight."+
-			"Must keep at least 10 minute breaks between all tasks.",
+			"Must keep at least 10 minute breaks between all tasks."+
+			"Tasks have their priority - priority 5 means it has to be included and can not be ommited."+
+			"Tasks with 0 priority could be skipped but don't need to."+
+			"If a user in tasks' summary says something bad about the given task, maybe consider lowering its occurrence times.",
 	)
 
 	raw, err := aiCtx.CreateMsg().WithFormatting().WithTasks().RunPrompt(c)
