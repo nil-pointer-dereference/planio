@@ -12,12 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type DopamineRequest struct {
-	TaskId  int    `json:"taskId"`
-	Rating  int    `json:"rating"`
-	Summary string `json:"summary"`
-}
-
 func HandlerPostAI(c *gin.Context) {
 	userFromSession, err := GetAuthenticated(c.GetHeader("Session"))
 	if err != nil {
@@ -103,46 +97,4 @@ func HandlerPostAI(c *gin.Context) {
 	}
 
 	c.AbortWithStatus(400)
-}
-
-func HandlerDopamine(c *gin.Context) {
-	userFromSession, err := GetAuthenticated(c.GetHeader("Session"))
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	var req DopamineRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-	task := &models.Task{}
-	if err := database.DB.Where("id = ?", req.TaskId).First(&task).Error; err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-	aiCtx := CreateNewAIContext(
-		map[string]string{
-			"Name":             userFromSession.Name,
-			"Age":              userFromSession.Birthday,
-			"Task information": task.Summary,
-			"Task type":        task.Type,
-			"Task title, name": task.Title,
-			"User's rating of the task of how it went:":   string(rune(req.Rating)),
-			"User's summary of the task and how it went:": req.Summary,
-		},
-		&[]models.Task{},
-		"Say a simple, up-keeping and heart-warming message depending on the context of the task."+
-			"A user is telling you about a situation and how the task went."+
-			"Keep it maximum to 4 sentences. Be very kind and if something went wrong, offer a short solution or change."+
-			"Keeping the original values. Do not use any formatting or markdown. Print only a raw text."+
-			"Maybe you could use an emoji.",
-	)
-
-	raw, err := aiCtx.CreateMsg().WithFormatting().WithTasks().RunPrompt(c)
-	if err != nil {
-		c.AbortWithStatus(400)
-		return
-	}
-	c.JSON(200, gin.H{"message": strings.Replace(raw, "\n", "", -1)})
 }
