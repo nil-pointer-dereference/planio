@@ -14,6 +14,7 @@ import {
 } from "./timeline-utils";
 import DayplanEventList from "./event-list";
 import FloatingEventPreview from "./floating-event-preview";
+import { useDayplanEvents } from "./useDayplanEvents";
 
 // Change HOURS to include 0 as the first value
 const HOURS = Array.from({ length: 13 }, (_, i) => i * 2);
@@ -41,73 +42,7 @@ interface DayplanEvent {
 
 export default function DayplanTimeline() {
   const timelineRef = useRef<HTMLDivElement>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Store event start/end as Date objects
-  const [events, setEvents] = useState<DayplanEvent[]>([]);
-
-  // Fetch events from API
-  useEffect(() => {
-    async function fetchEvents() {
-      try {
-        setLoading(true);
-        const response = await fetch("http://localhost:5173/api/ai", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Session: "da5b8893-d6ca-5c1c-9a9c-91f40a2a3649",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`API request failed with status ${response.status}`);
-        }
-
-        const data: ApiTask[] = await response.json();
-
-        // Skip the first element (index 0) as requested
-        const tasksToProcess = data.slice(1);
-
-        // Transform API tasks into Dayplan events
-        const transformedEvents: DayplanEvent[] = tasksToProcess.map(
-          (task, index) => {
-            const today = new Date();
-
-            // Create start date from StartHour
-            const start = new Date(today);
-            start.setHours(task.StartHour, 0, 0, 0);
-
-            // Create end date by adding EstimatedMinutes to start
-            const end = new Date(start);
-            const endMinutes = end.getMinutes() + task.EstimatedMinutes;
-            end.setMinutes(endMinutes);
-
-            return {
-              id: index + 1,
-              start,
-              end,
-              title: task.Title,
-              description: task.Description,
-              type: task.Type,
-              completed: task.Completed,
-            };
-          }
-        );
-
-        console.log(transformedEvents);
-
-        setEvents(transformedEvents);
-        setLoading(false);
-      } catch (err) {
-        console.error("Failed to fetch events:", err);
-        setError(err instanceof Error ? err.message : "Unknown error occurred");
-        setLoading(false);
-      }
-    }
-
-    fetchEvents();
-  }, []);
+  const { events, setEvents, loading, error } = useDayplanEvents();
 
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [dragging, setDragging] = useState(false);
