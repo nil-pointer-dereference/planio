@@ -9,6 +9,8 @@ export default function DayplanEventDraggableBox({
   onResizeStart,
   previewStartDate,
   previewEndDate,
+  title, // Add these props to the function parameters
+  description,
 }: {
   topPercent: number;
   heightPercent: number;
@@ -17,6 +19,8 @@ export default function DayplanEventDraggableBox({
   onResizeStart: (e: React.MouseEvent) => void;
   previewStartDate: Date;
   previewEndDate: Date;
+  title: string; // Add these types
+  description: string;
 }) {
   return (
     <div
@@ -31,8 +35,8 @@ export default function DayplanEventDraggableBox({
       onMouseDown={onDragStart}
     >
       <DayplanEventBox
-        title="Event Title"
-        description="This is a description of the event."
+        title={title} // Use the props instead of hardcoded values
+        description={description} // Use the props instead of hardcoded values
         start={previewStartDate}
         end={previewEndDate}
         top="0"
