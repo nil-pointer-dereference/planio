@@ -80,7 +80,7 @@ export default function StepThree(props: StepProps) {
                       min={1}
                       step={1}
                       defaultValue={[field.value as number]}
-                      onValueChange={field.onChange}
+                      onValueChange={(val) => field.onChange(val[0])}
                     ></Slider>
                   </FormControl>
                 </FormItem>
@@ -109,7 +109,7 @@ export default function StepThree(props: StepProps) {
                       min={1}
                       step={1}
                       defaultValue={[field.value as number]}
-                      onValueChange={field.onChange}
+                      onValueChange={(val) => field.onChange(val[0])}
                     ></Slider>
                   </FormControl>
                 </FormItem>
@@ -136,7 +136,7 @@ export default function StepThree(props: StepProps) {
                       min={1}
                       step={1}
                       defaultValue={[field.value as number]}
-                      onValueChange={field.onChange}
+                      onValueChange={(val) => field.onChange(val[0])}
                     ></Slider>
                   </FormControl>
                 </FormItem>

@@ -34,7 +34,7 @@ const useAuth = () => {
       localStorage.setItem("token", data.sessionId);
       if (data.formCompleted) {
         //TODO: navigate to task list
-        navigate("/");
+        navigate("/dayplan");
       } else {
         navigate("/questionnaire?step=1");
       }

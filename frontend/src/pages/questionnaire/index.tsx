@@ -1,4 +1,4 @@
-import { Navigate, useSearchParams } from "react-router";
+import { Navigate, useNavigate, useSearchParams } from "react-router";
 import StepOne from "./step-1";
 import StepTwo from "./step-2";
 import StepThree from "./step-3";
@@ -66,11 +66,13 @@ export default function QuestionnairePage() {
   const updateFormState = (fields: Partial<QuestionnaireSchema>) => {
     setForm({ ...form, ...(fields as QuestionnaireSchema) });
   };
+  const navigate = useNavigate();
 
   const finishQuestionnaire = async (fields: Partial<QuestionnaireSchema>) => {
     const final = { ...form, ...fields };
     setForm(final);
     await sendQuestionnaire(final);
+    navigate("/dayplan")
   };
 
   const getStepTitle = (step: number) => {

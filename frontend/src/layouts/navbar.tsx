@@ -8,6 +8,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Link, useNavigate } from "react-router";
 
 export default function Navbar() {
+  const token = localStorage.getItem("token");
+  console.log(token);
+
   const navigate = useNavigate();
   return (
     <div className="p-3 flex items-center w-full align-right">
@@ -37,22 +40,53 @@ export default function Navbar() {
       </div>
       <NavigationMenu className="ml-auto">
         <NavigationMenuList>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
-              onClick={() => navigate("/login")}
-            >
-              Zaloguj się
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink
-              className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
-              onClick={() => navigate("/register")}
-            >
-              Zarejestruj się
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+          {token ? (
+            <>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
+                  onClick={() => navigate("/")}
+                >
+                  Wyloguj się
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
+                  onClick={() => navigate("/dayplan")}
+                >
+                  Kalendarz
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
+                  onClick={() => navigate("/summary")}
+                >
+                  Podsumowanie
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </>
+          ) : (
+            <>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
+                  onClick={() => navigate("/login")}
+                >
+                  Zaloguj się
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink
+                  className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
+                  onClick={() => navigate("/register")}
+                >
+                  Zarejestruj się
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </>
+          )}
         </NavigationMenuList>
       </NavigationMenu>
       <SidebarTrigger class="flexggj"></SidebarTrigger>
