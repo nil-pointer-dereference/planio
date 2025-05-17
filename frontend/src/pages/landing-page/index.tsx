@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 export default function LandingPage() {
   return (
-    <div className="max-w-full h-screen bg-background gap-8 flex flex-col justify-center items-center">
+    <div className="w-max h-screen bg-background gap-8 flex flex-col justify-center items-center">
       <div className="absolute rounded-full opacity/5 -top-1/2 -translate-x-1/2 left-1/2 w-[10rem] h-[50rem] rotate-60 bg-primary blur-[16rem] z-100"></div>
       <div className="w-full flex flex-col justify-start items-center gap-12">
         <h1 className="lg:text-[10rem] text-7xl text-center flex items-center gap-6 fluid-text-animation group">
