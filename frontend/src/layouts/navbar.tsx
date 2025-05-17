@@ -10,7 +10,7 @@ import { Link, useNavigate } from "react-router";
 export default function Navbar() {
   const navigate = useNavigate();
   return (
-    <div className="relative top-0 left-0 w-full p-3 flex flex-row align-center">
+    <div className="p-3 flex items-center w-full align-right">
       <div>
         <Link to="/" className="flex p-1 justify-center mr-10">
           <svg
@@ -35,11 +35,11 @@ export default function Navbar() {
           <h1 className="text-xl font-bold">WIP</h1>
         </Link>
       </div>
-      <NavigationMenu>
+      <NavigationMenu className="ml-auto">
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink
-              className="font-bold"
+              className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
               onClick={() => navigate("/login")}
             >
               Zaloguj się
@@ -47,7 +47,7 @@ export default function Navbar() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink
-              className="font-bold"
+              className="font-bold hover:underline underline-offset-4 hover:bg-transparent"
               onClick={() => navigate("/register")}
             >
               Zarejestruj się
@@ -55,8 +55,7 @@ export default function Navbar() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      <div className="grow"></div>
-      <SidebarTrigger></SidebarTrigger>
+      <SidebarTrigger class="flexggj"></SidebarTrigger>
     </div>
   );
 }

@@ -1,14 +1,8 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function LoginForm({
   className,
@@ -17,12 +11,6 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col w-80 gap-6", className)} {...props}>
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Logowanie</CardTitle>
-          <CardDescription>
-            Miło nam, że wracasz :) Wprowadź email i hasło, aby zalogować się do aplikacji. 
-          </CardDescription>
-        </CardHeader>
         <CardContent>
           <form>
             <div className="flex flex-col gap-6">
@@ -30,7 +18,7 @@ export function LoginForm({
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
-                  type="email"
+                  type="input"
                   placeholder="me@example.com"
                   required
                 />
@@ -53,7 +41,10 @@ export function LoginForm({
             </div>
             <div className="mt-4 text-center text-sm">
               Nie masz konta?{" "}
-              <a href="#" className="underline underline-offset-4">
+              <a
+                href="/register"
+                className="underline hover:text-primary underline-offset-4"
+              >
                 Zarejestruj się
               </a>
             </div>
@@ -61,5 +52,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

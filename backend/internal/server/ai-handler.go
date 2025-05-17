@@ -12,6 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type DopamineRequest struct {
+	TaskId  int    `json:"taskId"`
+	Rating  int    `json:"rating"`
+	Summary string `json:"summary"`
+}
+
 func HandlerPostAI(c *gin.Context) {
 	userFromSession, err := GetAuthenticated(c.GetHeader("Session"))
 	if err != nil {
@@ -56,11 +62,14 @@ func HandlerPostAI(c *gin.Context) {
 			"Sleep hours":                  string(userForm.SleepHours),
 			"Only Task categories to use:": string(jsonTypes),
 			"Previous tasks and their summaries to learn:": string(jsonTasks),
-			"Work shift time:": "8 am to 4 pm",
+			"Work shift time:": userForm.WorkTime,
 		},
 		&[]models.Task{}, // empty notes
 		"raw generated tasks in json, do not wrap the json codes in JSON markdown markers. do not append any data from me."+
-			"You have 24 hour day. You have user data. task format: Type string, Completed bool, Title (max 4 words) string, Description (max 2 sentences) string EstimatedMinutes int."+
+			"You have 24 hour day. You have user data. task format: Type string, Completed bool, Title (max 4 words) string, Description (max 2 sentences) string"+
+			"EstimatedMinutes int means how long the task should take in minutes."+
+			"Start hour can be any :10, :15, :20, :25, :30, etc."+
+			"Do also startDate and endDate of format dd-MM-YYYY-HH:mm:ss"+
 			"if you consider sports, mind Experience in sports. Tasks should have start hour and mind their estimatedminutes."+
 			"You can adjust sleep time +/- 1 hour. If you do, tell it in the description of sleep."+
 			"Only one sleep session. Think about it as when to go to sleep and start other tasks after the sleep task period."+
@@ -69,7 +78,12 @@ func HandlerPostAI(c *gin.Context) {
 			"No tasks should overlap. Meaning that start hour + estimated minutes sum should not overflow on other task's start hour + estimated minutes, too."+
 			"Work shift time should always be in the same time, no matter what. Meaning that task of Type 'Work' can be only one within the designated hours and no more."+
 			"Do not mention any medication or things that do not require doctor's diagnosis."+
-			"Try to make tasks lightweight.",
+			"Try to make tasks lightweight."+
+			"Must keep at least 10 minute breaks between all tasks."+
+			"Tasks have their priority - priority 5 means it has to be included and can not be ommited."+
+			"Tasks with 0 priority could be skipped but don't need to."+
+			"If a user in tasks' summary says something bad about the given task, maybe consider lowering its occurrence times."+
+			"Work (as in job) tasks can only be considered if 'goes to work' is true. Otherwise, the human does not go to work.",
 	)
 
 	raw, err := aiCtx.CreateMsg().WithFormatting().WithTasks().RunPrompt(c)
@@ -89,4 +103,46 @@ func HandlerPostAI(c *gin.Context) {
 	}
 
 	c.AbortWithStatus(400)
+}
+
+func HandlerDopamine(c *gin.Context) {
+	userFromSession, err := GetAuthenticated(c.GetHeader("Session"))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	var req DopamineRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	task := &models.Task{}
+	if err := database.DB.Where("id = ?", req.TaskId).First(&task).Error; err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	aiCtx := CreateNewAIContext(
+		map[string]string{
+			"Name":             userFromSession.Name,
+			"Age":              userFromSession.Birthday,
+			"Task information": task.Summary,
+			"Task type":        task.Type,
+			"Task title, name": task.Title,
+			"User's rating of the task of how it went:":   string(rune(req.Rating)),
+			"User's summary of the task and how it went:": req.Summary,
+		},
+		&[]models.Task{},
+		"Say a simple, up-keeping and heart-warming message depending on the context of the task."+
+			"A user is telling you about a situation and how the task went."+
+			"Keep it maximum to 4 sentences. Be very kind and if something went wrong, offer a short solution or change."+
+			"Keeping the original values. Do not use any formatting or markdown. Print only a raw text."+
+			"Maybe you could use an emoji.",
+	)
+
+	raw, err := aiCtx.CreateMsg().WithFormatting().WithTasks().RunPrompt(c)
+	if err != nil {
+		c.AbortWithStatus(400)
+		return
+	}
+	c.JSON(200, gin.H{"message": strings.Replace(raw, "\n", "", -1)})
 }
