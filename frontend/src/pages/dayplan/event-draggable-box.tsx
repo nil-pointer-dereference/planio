@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import DayplanEventBox from "./event-box";
 
 export default function DayplanEventDraggableBox({
@@ -9,7 +9,7 @@ export default function DayplanEventDraggableBox({
   onResizeStart,
   previewStartDate,
   previewEndDate,
-  title, // Add these props to the function parameters
+  title,
   description,
 }: {
   topPercent: number;
@@ -19,11 +19,32 @@ export default function DayplanEventDraggableBox({
   onResizeStart: (e: React.MouseEvent) => void;
   previewStartDate: Date;
   previewEndDate: Date;
-  title: string; // Add these types
+  title: string;
   description: string;
 }) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [isTiny, setIsTiny] = useState(false);
+
+  useEffect(() => {
+    const checkHeight = () => {
+      if (boxRef.current) {
+        setIsTiny(boxRef.current.offsetHeight < 22);
+      }
+    };
+    checkHeight();
+    if (boxRef.current && "ResizeObserver" in window) {
+      const observer = new ResizeObserver(checkHeight);
+      observer.observe(boxRef.current);
+      return () => observer.disconnect();
+    } else {
+      window.addEventListener("resize", checkHeight);
+      return () => window.removeEventListener("resize", checkHeight);
+    }
+  }, [heightPercent]);
+
   return (
     <div
+      ref={boxRef}
       className="absolute left-1/2 z-10 w-[300px] -translate-x-1/2 group"
       style={{
         top: `${topPercent}%`,
@@ -35,17 +56,23 @@ export default function DayplanEventDraggableBox({
       onMouseDown={onDragStart}
     >
       <DayplanEventBox
-        title={title} // Use the props instead of hardcoded values
-        description={description} // Use the props instead of hardcoded values
+        title={title}
+        description={description}
         start={previewStartDate}
         end={previewEndDate}
         top="0"
         height="100%"
+        hideResizeGradient={isTiny}
       />
-      {/* Resize handle */}
+      {/* Resize handle - always interactive, just invisible if tiny */}
       <div
         className="absolute left-1/2 -translate-x-1/2 bottom-1 w-28 h-1 flex items-end justify-center z-20"
-        style={{ touchAction: "none", cursor: "ns-resize" }}
+        style={{
+          touchAction: "none",
+          cursor: "ns-resize",
+          opacity: isTiny ? 0 : 1,
+          pointerEvents: "auto",
+        }}
         onMouseDown={onResizeStart}
       >
         <div className="w-20 h-0.5 bg-green-800 rounded-full opacity-90 group-hover:opacity-100 mb-0.5" />

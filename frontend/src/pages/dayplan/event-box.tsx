@@ -7,6 +7,7 @@ interface DayplanEventBoxProps {
   end: Date;
   top: string;
   height: string;
+  hideResizeGradient?: boolean; // Add this new optional prop
 }
 
 export default function DayplanEventBox({
@@ -16,6 +17,7 @@ export default function DayplanEventBox({
   end,
   top,
   height,
+  hideResizeGradient = false, // Default to false
 }: DayplanEventBoxProps) {
   const time = `${start.toLocaleTimeString([], {
     hour: "2-digit",
@@ -108,6 +110,7 @@ export default function DayplanEventBox({
           background:
             "linear-gradient(to top, rgba(187,247,208,1) 0%, rgba(187,247,208,0) 100%)",
           zIndex: 1,
+          opacity: hideResizeGradient ? 0 : 1,
         }}
         id="resize-gradient-bg"
       />
