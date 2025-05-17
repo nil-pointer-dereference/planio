@@ -16,7 +16,7 @@ export default function TaskPopup() {
           <LucidePlusSquare></LucidePlusSquare>
         </PopoverTrigger>
         <PopoverContent sideOffset={15} className="animate-fade-in">
-          <TaskInput></TaskInput>
+          <TaskInput setOpenParent={setOpen}></TaskInput>
         </PopoverContent>
       </Popover>
     </div>

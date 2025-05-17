@@ -21,25 +21,36 @@ export default function PopupInput({ setOpenParent }: PopupInputProps) {
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-    const response = await fetch("http://localhost:3000/task", {
-      method: "PUT",
-      body: JSON.stringify({
-        id: 1,
-        summary: summary,
-        rating: taskGrade,
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:3000/task", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: 10,
+          summary: summary,
+          rating: taskGrade,
+        }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.statusMessage);
-    }
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.statusMessage);
+      }
 
-    const data = await response.json();
-    console.log("Task summarized successfully:", data);
+      const data = await response.json();
+      console.log("Task summarized successfully:", data);
 
-    if (setOpenParent) {
-      setOpenParent(false);
+      // Safely close the popup
+      if (setOpenParent) {
+        setOpenParent(false);
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+      if (setOpenParent) {
+        setOpenParent(false);
+      }
     }
   }
 

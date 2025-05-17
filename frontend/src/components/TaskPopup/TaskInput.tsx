@@ -49,26 +49,33 @@ export default function PopupInput({ setOpenParent }: PopupInputProps) {
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-    const response = await fetch("http://localhost:3000/task", {
-      method: "POST",
-      body: JSON.stringify({
-        title: title,
-        type: taskType,
-        taskTime: taskTime,
-        taskPriority: taskPriority,
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:3000/task", {
+        method: "POST",
+        body: JSON.stringify({
+          title: title,
+          type: taskType,
+          EstimatedMinutes: taskTime,
+          priority: taskPriority,
+        }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.statusMessage);
-    }
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.statusMessage);
+      }
 
-    const data = await response.json();
-    console.log("Task created successfully:", data);
+      const data = await response.json();
+      console.log("Task created successfully:", data);
 
-    if (setOpenParent) {
-      setOpenParent(false);
+      if (setOpenParent) {
+        setOpenParent(false);
+      }
+    } catch (error) {
+      console.error("Error creating task:", error);
+      if (setOpenParent) {
+        setOpenParent(false);
+      }
     }
   }
   return (
